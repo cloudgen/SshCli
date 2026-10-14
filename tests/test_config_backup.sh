@@ -58,6 +58,8 @@ run_test_config_backup() {
     assert_contains "TP-CFG-04 Termux not available" "$_err" "not available for termux"
     _out=$(printf '%s\n' '1' '0' '9' | HOME="${CI_HOME}" USER_BIN="${CI_USER_BIN}" GLOBAL_BIN="${CI_GLOBAL_BIN}" TTY=1 TERMUX_VERSION=1 sh "${SCRIPT}" 2>&1)
     assert_contains "TP-CFG-04 Termux menu INFO" "$_out" "backup-config and sync-config not available for termux"
+    assert_contains "TP-CFG-04 Termux front sudoers INFO" "$_out" "sudoers not available for termux"
+    assert_not_contains "TP-CFG-04 Termux omits sudoers row" "$_out" "5. "
     assert_not_contains "TP-CFG-04 Termux no backup-config row 15" "$_out" "15."
     assert_contains "TP-CFG-04 Termux ssh row 12" "$_out" "12."
     assert_contains "TP-CFG-04 Termux sync-from-remote row 18" "$_out" "18."
@@ -67,6 +69,8 @@ run_test_config_backup() {
     ci_isolated_env
     _out=$(printf '%s\n' '1' '0' '9' | HOME="${CI_HOME}" USER_BIN="${CI_USER_BIN}" GLOBAL_BIN="${CI_GLOBAL_BIN}" TTY=1 MSYSTEM=MINGW64 env -u TERMUX_VERSION sh "${SCRIPT}" 2>&1)
     assert_contains "TP-CFG-05 Git Bash menu INFO" "$_out" "backup-config and sync-config not available for gitbash"
+    assert_contains "TP-CFG-05 Git Bash front sudoers INFO" "$_out" "sudoers not available for gitbash"
+    assert_not_contains "TP-CFG-05 Git Bash omits sudoers row" "$_out" "5. "
     assert_not_contains "TP-CFG-05 Git Bash no backup-config row 15" "$_out" "15."
     assert_contains "TP-CFG-05 Git Bash ssh row 12" "$_out" "12."
     assert_contains "TP-CFG-05 Git Bash sync-from-remote row 18" "$_out" "18."
@@ -108,6 +112,8 @@ run_test_config_backup() {
     ci_isolated_env
     _out=$(printf '%s\n' '1' '0' '9' | HOME="${CI_HOME}" USER_BIN="${CI_USER_BIN}" GLOBAL_BIN="${CI_GLOBAL_BIN}" TTY=1 OS=Windows_NT COMSPEC='C:\\Windows\\system32\\cmd.exe' env -u TERMUX_VERSION -u MSYSTEM -u WSL_DISTRO_NAME sh "${SCRIPT}" 2>&1)
     assert_contains "TP-CFG-09 Windows cmd menu INFO" "$_out" "backup-config and sync-config not available for windows-cmd"
+    assert_contains "TP-CFG-09 Windows cmd front sudoers INFO" "$_out" "sudoers not available for windows-cmd"
+    assert_not_contains "TP-CFG-09 Windows cmd omits sudoers row" "$_out" "5. "
     assert_contains "TP-CFG-09 Windows cmd ssh row 12" "$_out" "12."
     assert_contains "TP-CFG-09 Windows cmd sync-from-remote row 18" "$_out" "18."
     ci_cleanup_env
@@ -190,18 +196,18 @@ FAKESCP
     assert_contains "TP-CFG-16 json type" "${_j}" '"type":"sync-from-remote"'
     assert_contains "TP-CFG-16 json host" "${_j}" '"host":"host.example.test"'
 
-    # TP-CFG-17 TTY sudoers submenu unknown choice redisplays (front 7; verbs 71-75)
-    _out=$(printf '%s\n' '7' '88' '0' '9' | HOME="${CI_HOME}" USER_BIN="${CI_USER_BIN}" GLOBAL_BIN="${CI_GLOBAL_BIN}" TTY=1 env -u TERMUX_VERSION -u MSYSTEM -u WSL_DISTRO_NAME sh "${SCRIPT}" 2>&1)
+    # TP-CFG-17 TTY sudoers submenu unknown choice redisplays (front 5; verbs 51-55)
+    _out=$(printf '%s\n' '5' '88' '0' '9' | HOME="${CI_HOME}" USER_BIN="${CI_USER_BIN}" GLOBAL_BIN="${CI_GLOBAL_BIN}" TTY=1 env -u TERMUX_VERSION -u MSYSTEM -u WSL_DISTRO_NAME sh "${SCRIPT}" 2>&1)
     _ec=$?
     assert_eq "TP-CFG-17 sudoers unknown then Back then Exit 9 exit 0" 0 "$_ec"
     assert_contains "TP-CFG-17 unknown sudoers named" "${_out}" "Unknown sudoers choice '88'"
     _n=$(t_count_substr "${_out}" "sudoers (grant and drafts)")
     assert_eq "TP-CFG-17 redisplays sudoers menu" "2" "$_n"
-    _n=$(printf '%s\n' "${_out}" | grep -cE '(^|[^0-9])71[.]' || true)
-    assert_eq "TP-CFG-17 prints verb 71" "2" "${_n}"
-    _n=$(printf '%s\n' "${_out}" | grep -cE '(^|[^0-9])75[.]' || true)
-    assert_eq "TP-CFG-17 prints verb 75" "2" "${_n}"
-    _n=$(printf '%s\n' "${_out}" | grep -cE '(^|[^0-9])171[.]' || true)
+    _n=$(printf '%s\n' "${_out}" | grep -cE '(^|[^0-9])51[.]' || true)
+    assert_eq "TP-CFG-17 prints verb 51" "2" "${_n}"
+    _n=$(printf '%s\n' "${_out}" | grep -cE '(^|[^0-9])55[.]' || true)
+    assert_eq "TP-CFG-17 prints verb 55" "2" "${_n}"
+    _n=$(printf '%s\n' "${_out}" | grep -cE '(^|[^0-9])151[.]' || true)
     assert_eq "TP-CFG-17 does not print 171" "0" "${_n}"
     _out=$(printf '%s\n' '1' '17' '0' '9' | HOME="${CI_HOME}" USER_BIN="${CI_USER_BIN}" GLOBAL_BIN="${CI_GLOBAL_BIN}" TTY=1 env -u TERMUX_VERSION -u MSYSTEM -u WSL_DISTRO_NAME sh "${SCRIPT}" 2>&1)
     _ec=$?

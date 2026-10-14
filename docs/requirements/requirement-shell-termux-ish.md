@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-shell-termux-ish.md  
-**Status**: Active (Version 1.2.0)  
+**Status**: Active (Version 1.2.1)  
 **Area**: shell  
 **Key**: `requirement-shell-termux-ish`  
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -194,6 +194,7 @@ Helpers (this product): `sshd_is_termux`, `sshd_is_git_bash`, `sshd_is_windows_c
 | `docs/requirements/requirement-shell-cli-zero-arguments.md` | Interactive empty argv is not pkg-ensure |
 | `docs/requirements/requirement-shell-idempotency.md` | Re-run `pkg` must not hang |
 | `docs/requirements/requirement-class-software-dev.md` | Class residual points here |
+| `docs/requirements/requirement-shell-termux-cli-coding.md` | How to write the CLI on Termux (one detect). This file still owns `pkg` and the wake lock |
 | `./sshd-cli` | Implementation |
 
 ## 6. Design-time verification
@@ -210,6 +211,6 @@ Helpers (this product): `sshd_is_termux`, `sshd_is_git_bash`, `sshd_is_windows_c
 **Matrix:** `reviews/requirement-test-matrix.md`  
 **Map:** `reviews/test-plan.md`
 
-**Last Updated**: 2026-09-07  
+**Last Updated**: 2026-10-14 (1.2.1 points at `requirement-shell-termux-cli-coding` for Termux CLI coding. `pkg` and the wake lock stay here. 2026-09-07)  
 **Owner**: Cloudgen Wong  
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

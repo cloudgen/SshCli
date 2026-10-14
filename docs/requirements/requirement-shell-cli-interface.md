@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-shell-cli-interface.md  
-**Status**: Active (Version 1.14.10)  
+**Status**: Active (Version 1.14.14)  
 **Philosophy**: CIAO / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered)
 
 ## 1. Purpose
@@ -134,7 +134,7 @@ When specializing product **B** from this bootstrap (**A → B only**):
 | **Primary executable** | Repo root `./sshd-cli` (POSIX `/bin/sh`, single-file for `curl \| sh`) |
 | **Dispatcher** | `app_main` (always invoked at end of script: `app_main "$@"` — no `${0##*/}` / APP_NAME basename gate; required for `curl \| sh`) |
 | **Output SSOT** | `out_text` + wrappers (`out_info`, `out_success`, `out_warn`, `out_error`, `out_die`, `out_plain`, `out_json`, …) |
-| **Version SSOT** | `VERSION` default `1.32.0` (script header / config block: `VERSION="1.32.0"`) |
+| **Version SSOT** | `VERSION` default `1.35.0` (script header / config block: `VERSION="1.35.0"`) |
 | **Install paths** | Global: `GLOBAL_BIN` default `/usr/local/bin`, or `${PREFIX}/bin` when Termux `PREFIX/bin` exists; User: `USER_BIN` default `${HOME}/.local/bin` |
 | **Interactive rc write path** | `BASHRC` default `${HOME}/.bashrc`. `install` PATH ensure creates/modifies this file. Tests/CI **MAY** set `BASHRC` to a file in a temp folder. Dual mention: `requirement-shell-path-and-shell-support`. |
 | **Remote channel env (help surface)** | `REPO_USER` / `REPO_NAME` (defaults `cloudgen` / `sshd-cli`); `SCRIPT_URL` composed default `https://raw.githubusercontent.com/${REPO_USER}/${REPO_NAME}/main/${APP_NAME}` (literal product default: `https://raw.githubusercontent.com/cloudgen/sshd-cli/main/sshd-cli`; override via env). **`help` / `about` MUST list these operator channel vars as designed — MUST NOT list `CHECKSUM`** (install-path runtime pin only; see `requirement-shell-automatic-checksum.md`). **`help` Environment also lists `BASHRC`.** |
@@ -149,7 +149,7 @@ When specializing product **B** from this bootstrap (**A → B only**):
 | *(zero-cli-verb — no verb; switches allowed)* | Type 0 | `app_main` → `app_cmd_menu` (interactive) or `inst_self_install` (non-interactive) | Interactive: main menu (`sshd-cli`, `sshd-cli --debug`). Non-interactive: **CLI self-install** (`curl \| sh`, `sshd-cli --quiet`, `sshd-cli --json` with no verb). Never help. Never payload. See `requirement-shell-cli-zero-arguments.md` · `requirement-shell-cli-default-interaction.md` · `requirement-shell-cli-self-install.md` |
 | `self-install` | Type 0 | `inst_self_install` | Place **this CLI only** (copy when `$0` is a script; download when piped). Dest **0700** local / **0755** global. **MUST NOT** `pkg` or start sshd. Dual mention: `requirement-shell-cli-self-install`. Sample: `sshd-cli self-install` |
 | `install` | Type 0 | `inst_perform_install` | Payload: **always** `inst_ensure_companion` (rc + Termux pkg); then **start sshd** (`sshd_start_after_install`). Also places the CLI if needed. Dual mention: `requirement-shell-self-management` · `requirement-shell-path-and-shell-support` · `requirement-domain-sshd` |
-| `version` | Type 0 | argv: `app_version`; TTY **82** / typed `version` on a board: `app_about` | Argv: print local version; JSON `"type":"version"` when `--json`. TTY numbered **82** and typed `version` run **about** (diagnostics), not a header reprint (**INC-20260914-001**). |
+| `version` | Type 0 | argv: `app_version`; TTY **62** / typed `version` on a board: `app_about` | Argv: print local version; JSON `"type":"version"` when `--json`. TTY numbered **62** and typed `version` run **about** (diagnostics), not a header reprint (**INC-20260914-001**). |
 | `about` | Type 0 | `app_about` | Diagnostics: install presence, global/local paths, user, shell, TTY; **Cache folder used**, **preferred**, **1st fallback**, **2nd fallback** when that host has one, and **Persistence storage** (`requirement-shell-cli-storage`); human lines follow the saved language; JSON when `--json` stays English; **no `CHECKSUM` field** |
 | `version-check` | Type 0 | `ver_check` | Compare local vs remote `VERSION` from `SCRIPT_URL`; fail clearly if URL unset/unreachable |
 | `self-update` | Type 0 | `inst_self_update` | Fetch remote version; reinstall when policy allows; reuse install primitives. **CLI-only:** no auto-start sshd; no `sshd -t` of `/etc/ssh/sshd_config`. Dual mention: `requirement-shell-self-management` · `requirement-domain-sshd` |
@@ -168,7 +168,7 @@ When specializing product **B** from this bootstrap (**A → B only**):
 | `ssh` | Type 0 domain | `sshd_cmd_ssh` | OpenSSH client to a concrete Host alias from this login `~/.ssh/config` (TTY numbered pick then user with default; operand `<n\|name>`). Dual mention: `requirement-domain-sshd` · `requirement-shell-interactive-vs-noninteractive`. Sample: `sshd-cli ssh 1` |
 | `download` | Type 0 domain | `sshd_cmd_download` | tar.gz a remote folder over ssh and extract into cwd (TTY Host pick, then user with default, then numbered previous folders or a typed path; `~/folder` allowed). Dual mention: `requirement-domain-sshd` · `requirement-shell-interactive-vs-noninteractive`. Sample: `sshd-cli download 1 /opt/app` · `sshd-cli download 1 ~/box/app` |
 | `upload` | Type 0 domain | `sshd_cmd_upload` | tar.gz a **local** folder over ssh and extract under the remote login home (TTY Host pick, then user with default, then numbered previous **local** folders or a typed path; `~/folder` is this login). Dual mention: `requirement-domain-sshd` · `requirement-shell-interactive-vs-noninteractive`. Sample: `sshd-cli upload 1 ./box` · `sshd-cli upload 1 ~/box/app` |
-| `menu` / `main` | Type 0 | `app_cmd_menu` | Numbered tree on a terminal (`main` is an unlisted alias of `menu`). Same handler as an interactive zero-cli-verb. Front **1** client-side / **2** server-side / **5** language / **7** sudoers (POSIX Linux) / **8** self-management / **9** Exit. **5** opens the language block **50–69** (not more than 20 languages): **51** English / **52** Simplified Chinese / **53** Traditional Chinese / **54** Spanish / **55** Arabic / **56** French / **57** Portuguese / **58** Russian / **59** German / **60** Japanese / **61** Korean / **62** Dutch / **63** Greek. **50** and **64–69** are reserved and are not printed. Front **6** is not a row. Dual mention: `requirement-shell-cli-default-interaction` · `requirement-shell-cli-language` · `requirement-domain-sshd` · `requirement-shell-interactive-vs-noninteractive` |
+| `menu` / `main` | Type 0 | `app_cmd_menu` | Numbered tree on a terminal (`main` is an unlisted alias of `menu`). Same handler as an interactive zero-cli-verb. Front **1** client-side / **2** server-side / **5** sudoers (POSIX Linux) / **6** self-management / **7** language / **9** Exit. **7** opens the language block **70–89** (not more than 20 languages): **71** English / **72** Simplified Chinese / **73** Traditional Chinese / **74** Spanish / **75** Arabic / **76** French / **77** Portuguese / **78** Russian / **79** German / **80** Japanese / **81** Korean / **82** Dutch / **83** Greek. **70** and **84–89** are reserved and are not printed. Front **8** is not a row. Dual mention: `requirement-shell-cli-default-interaction` · `requirement-shell-cli-language` · `requirement-domain-sshd` · `requirement-shell-interactive-vs-noninteractive` |
 | `wake-lock` | Type 0 | `sshd_cmd_wake_lock` | Acquire Android wake lock again (`termux-wake-lock`). Termux: fail closed if helper missing. Off Termux: success no-op. Dual mention: `requirement-shell-termux-ish` |
 | `wake-unlock` | Type 0 | `sshd_cmd_wake_unlock` | Release Android wake lock (`termux-wake-unlock`). Operator-owned. **MUST NOT** auto-run from `stop`. Dual mention: `requirement-shell-termux-ish` |
 | `backup-config` | Type 1 deposit (POSIX Linux) | `sshd_cmd_backup_config` | Copy this login `~/.ssh/config` to `/var/sshd-cli/config`. Dual mention: `requirement-shell-config-backup` · `requirement-shell-sudoer` · `requirement-domain-sshd`. Sample: `sshd-cli backup-config` |
@@ -233,7 +233,7 @@ fi
 
 #### Dispatcher acceptance criteria (this project)
 
-1. Unknown token after flag parse → `out_die` with pointer to `sshd-cli help`.  
+1. Unknown token after flag parse → `out_die` with pointer to `sshd-cli help` (catalog row EX-DIE-196 in `requirement-shell-exit-condition`).  
 2. Zero-cli-verb (no verb; switches allowed) → interactive main menu **or** non-interactive CLI self-install (not help, not JSON help); failures non-zero.  
 3. Command routing table in `app_main` **must** include every **operational** row in the command table above **and** `rc-test`.  
 4. Help text **must** stay aligned with that table (no orphan commands, no listed-but-unrouted commands). Help **MUST** list `rc-test` under a heading **apart** from operational verbs.  
@@ -307,7 +307,7 @@ Helpers (this product): `sshd_is_termux`, `sshd_is_git_bash`, `sshd_is_windows_c
 13. Drop `wake-lock` / `wake-unlock` from the command table without updating `requirement-shell-termux-ish`, or auto-unlock on `stop`.  
 14. Drop `rc-test` from the dual-mention table without updating `requirement-shell-path-and-shell-support`, mix it into operational help grouping, or treat it as install.  
 15. Fail **`self-update`** after a successful CLI place because host `sshd -t` / `/etc/ssh/sshd_config` / `/run/sshd` failed.  
-16. Treat TTY **82** / typed `version` on a numbered board as argv `app_version` (header reprint). TTY **MUST** run `about`. Argv `version` / JSON `"type":"version"` stay thin (**INC-20260914-001**).
+16. Treat TTY **62** / typed `version` on a numbered board as argv `app_version` (header reprint). TTY **MUST** run `about`. Argv `version` / JSON `"type":"version"` stay thin (**INC-20260914-001**).
 
 **Violating this rule is a critical CLI interface regression.**
 
@@ -339,11 +339,12 @@ This requirement is satisfied for the sshd-cli shell CLI when all of the followi
 | `docs/requirements/requirement-shell-idempotency.md` | Re-run safety for ensure ops |
 | `docs/requirements/requirement-shell-modular-function-design.md` | Prefix ownership (`app_`, `inst_`, `out_*`) |
 | `docs/requirements/requirement-shell-termux-ish.md` | Termux detect / `pkg`; Git Bash is same privilege class |
+| `docs/requirements/requirement-shell-exit-condition.md` | Process exit catalog (unknown token EX-DIE-196) |
 | `docs/requirements/index.md` | Registry SSOT |
 | `./sshd-cli` | Implementation under test |
 
 ---
 
-**Last Updated**: 2026-10-02 (1.14.10 language rows **51–63** (`ar`, `pt`, `ru`, `nl`, `el`). Product `VERSION="1.32.0"`. 1.14.9 front **5** language, block **50–69**. Product `VERSION="1.31.0"`. 1.14.8 `fix-config` and the automatic client-config pass. Product `VERSION="1.30.0"`. 1.14.7 language **67–68**; human help and about follow the saved language. 1.14.6 language **63–66**. 1.14.5 front **6** language. 1.14.4 `menu`/`main` handler is `app_cmd_menu`. Zero-cli-verb gate is live after flag parse. Prior: 2026-09-27 `about` cache lines)  
+**Last Updated**: 2026-10-14 (1.14.14 product `VERSION="1.35.0"`. 1.14.13 front **5** sudoers **51–55**, front **6** self-management **61–67**, front **7** language **71–83**. Product `VERSION="1.34.0"`. 1.14.12 unknown-token exit points at `requirement-shell-exit-condition`. 1.14.11 product `VERSION="1.33.0"`. 1.14.10 language rows **51–63** (`ar`, `pt`, `ru`, `nl`, `el`). Product `VERSION="1.32.0"`. 1.14.9 front **5** language, block **50–69**. Product `VERSION="1.31.0"`. 1.14.8 `fix-config` and the automatic client-config pass. Product `VERSION="1.30.0"`. 1.14.7 language **67–68**; human help and about follow the saved language. 1.14.6 language **63–66**. 1.14.5 front **6** language. 1.14.4 `menu`/`main` handler is `app_cmd_menu`. Zero-cli-verb gate is live after flag parse. Prior: 2026-09-27 `about` cache lines)  
 **Owner**: sshd-cli project maintainers  
 **Alignment**: Registry `docs/requirements/index.md`; CIAO Principles 1, 2, 3, 5, 6, 10, 16, 4, 20 (v2.10.2) (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

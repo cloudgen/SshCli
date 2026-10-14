@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-shell-config-backup.md  
-**Status**: Active (Version 1.0.1)  
+**Status**: Active (Version 1.0.3)  
 **Area**: shell  
 **Key**: `requirement-shell-config-backup`  
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -113,7 +113,7 @@ The last two are owned by `requirement-shell-sudoer` (listed so the dependency i
 
 ## Under command line for normal user only
 
-When the ship unit detects Termux, Git Bash, Windows cmd, or the same class: **MUST NOT** deposit into `/var/sshd-cli` or wrap `sudo`. Direct `backup-config` / local `sync-config` **MUST** fail closed. The client board’s **menu-hidden message** for that cause **MUST** print `[INFO] backup-config and sync-config not available for termux` / `gitbash` / `windows-cmd` **before** the client numbered list and **MUST** omit **15** backup-config and **16** sync-config. **`sync-from-remote` remains available** and **MUST** be numbered **18** on the client board (client **12** `ssh`, **13** `download`). Front **7** sudoers is a separate hide cause on the front board. Its menu-hidden message is owned by `requirement-shell-cli-default-interaction` (the ship unit still omits the row and prints no front-board message — Gap). Numbers: `requirement-shell-cli-default-interaction`.
+When the ship unit detects Termux, Git Bash, Windows cmd, or the same class: **MUST NOT** deposit into `/var/sshd-cli` or wrap `sudo`. Direct `backup-config` / local `sync-config` **MUST** fail closed. The client board’s **menu-hidden message** for that cause **MUST** print `[INFO] backup-config and sync-config not available for termux` / `gitbash` / `windows-cmd` **before** the client numbered list and **MUST** omit **15** backup-config and **16** sync-config. **`sync-from-remote` remains available** and **MUST** be numbered **18** on the client board (client **12** `ssh`, **13** `download`). Front **5** sudoers is a separate hide cause on the front board. Its menu-hidden message is owned by `requirement-shell-cli-default-interaction` (`sudoers not available for termux` / `gitbash` / `windows-cmd`). Numbers: `requirement-shell-cli-default-interaction`.
 
 **This requirement:** host deposit is POSIX Linux; remote pull is this-login `scp` on every class.
 
@@ -160,6 +160,6 @@ When the ship unit detects Termux, Git Bash, Windows cmd, or the same class: **M
 | `docs/requirements/requirement-shell-cli-interface.md` | Dual mention |
 | `./sshd-cli` | Ship unit |
 
-**Last Updated**: 2026-09-28  
+**Last Updated**: 2026-10-14 (1.0.3 front **5** sudoers is the separate hide cause. 1.0.2 front **7** hide sentence is have on the menu requirement. 2026-09-28 menu-hidden message)  
 **Owner**: sshd-cli project maintainers  
 **Alignment**: Registry `docs/requirements/index.md`; CIAO (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

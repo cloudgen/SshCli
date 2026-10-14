@@ -58,7 +58,7 @@ APP_NAME="sshd-cli"
 : "${SHORT_DESCRIPTION:=${APP_DESC}}"
 : "${DESCRIPTION:=POSIX /bin/sh CLI: simplify Termux to install and run OpenSSH sshd (status/start/stop/port/keys/dns) plus self-install; Linux host deposit of ~/.ssh/config (backup-config / sync-config / sync-from-remote).}"
 # Product version SSOT (semver). Extractors use: grep '^VERSION="'
-VERSION="1.32.0"
+VERSION="1.35.0"
 : "${VERSION:=1.29.0}"
 
 # Runtime flags (safe defaults)
@@ -1288,7 +1288,9 @@ sshd_start_after_install() {
     fi
     if [ -z "${SSHD_BIN}" ] || [ ! -x "${SSHD_BIN}" ]; then
         if [ "${JSON}" -eq 0 ]; then
-            out_warn "OpenSSH sshd is not on this login PATH. ${APP_NAME} is installed. Next: install openssh-server, then ${APP_NAME} start."
+            _hint=$(sshd_openssh_server_hint)
+            out_warn "OpenSSH sshd is not on this login PATH. ${APP_NAME} is installed. Next: ${_hint}"
+            unset _hint
         fi
         return 0
     fi
@@ -3719,13 +3721,44 @@ sshd_running_pid() {
     return 1
 }
 
+# sshd_openssh_server_hint() - operator next step when sshd is missing
+#
+# Does not run dnf, apt, brew, or pkg. Termux uses sshd-cli install instead.
+# POSIX Linux names both package tools in one sentence (no os-release branch).
+# Product law: requirement-shell-fedora-redhat-cli-coding.md
+#              requirement-shell-debian-cli-coding.md
+#              requirement-shell-macos-cli-coding.md
+#              requirement-shell-windows-git-bash-cli-coding.md
+#              requirement-shell-exit-condition.md
+# Last updated: 2026-10-14
+sshd_openssh_server_hint() {
+    : "${APP_NAME:=sshd-cli}"
+    if sshd_is_git_bash; then
+        printf '%s' "Git Bash does not provide sshd. Install OpenSSH for Windows, then retry ${APP_NAME} start."
+        return 0
+    fi
+    if sshd_is_windows_cmd; then
+        printf '%s' "Windows cmd does not provide sshd. Install OpenSSH for Windows, then retry ${APP_NAME} start."
+        return 0
+    fi
+    _hint_uname=$(uname -s 2>/dev/null || true)
+    if [ "${_hint_uname}" = "Darwin" ]; then
+        unset _hint_uname
+        printf '%s' "install the OpenSSH server on this Mac, then retry ${APP_NAME} start."
+        return 0
+    fi
+    unset _hint_uname
+    printf '%s' "install the openssh-server package with this OS package tool (dnf on Fedora and RHEL, apt on Debian and Ubuntu). ${APP_NAME} does not run that command. Then retry ${APP_NAME} start."
+}
+
 sshd_need_bin() {
     sshd_resolve
     if [ -z "${SSHD_BIN}" ] || [ ! -x "${SSHD_BIN}" ]; then
         if [ "${SSHD_PLATFORM}" = "termux" ]; then
             out_die "OpenSSH sshd is not installed. Next: run ${APP_NAME} install (it runs: pkg install openssh termux-auth), then retry ${APP_NAME} start"
         fi
-        out_die "OpenSSH sshd is not installed. On Debian/Ubuntu: apt install openssh-server. Then retry ${APP_NAME} start."
+        _hint=$(sshd_openssh_server_hint)
+        out_die "OpenSSH sshd is not installed. Next: ${_hint}"
     fi
 }
 
@@ -5325,59 +5358,59 @@ sshd_cmd_sudoers_menu() {
         out_info "$(printf '%s' "${APP_NAME}") — $(app_menu_text sudoers_header)"
         case "${APP_LANG:-en}" in
             zh-Hant)
-                out_menu_choice "71" "generate-sudoer-request" "寫一份可閱讀的 JSON 授權"
+                out_menu_choice "51" "generate-sudoer-request" "寫一份可閱讀的 JSON 授權"
                 ;;
             es)
-                out_menu_choice "71" "generate-sudoer-request" "Escribe una concesión JSON que se puede leer"
+                out_menu_choice "51" "generate-sudoer-request" "Escribe una concesión JSON que se puede leer"
                 ;;
             fr)
-                out_menu_choice "71" "generate-sudoer-request" "Écrire une autorisation JSON lisible"
+                out_menu_choice "51" "generate-sudoer-request" "Écrire une autorisation JSON lisible"
                 ;;
             de)
-                out_menu_choice "71" "generate-sudoer-request" "Eine lesbare JSON-Freigabe schreiben"
+                out_menu_choice "51" "generate-sudoer-request" "Eine lesbare JSON-Freigabe schreiben"
                 ;;
             zh-Hans)
-                out_menu_choice "71" "generate-sudoer-request" "写一份可阅读的 JSON 授权"
+                out_menu_choice "51" "generate-sudoer-request" "写一份可阅读的 JSON 授权"
                 ;;
             ja)
-                out_menu_choice "71" "generate-sudoer-request" "読める JSON 認可を書く"
+                out_menu_choice "51" "generate-sudoer-request" "読める JSON 認可を書く"
                 ;;
             ko)
-                out_menu_choice "71" "generate-sudoer-request" "읽을 수 있는 JSON 허가를 작성"
+                out_menu_choice "51" "generate-sudoer-request" "읽을 수 있는 JSON 허가를 작성"
                 ;;
             ar)
-                out_menu_choice "71" "generate-sudoer-request" "اكتب منحة JSON يمكن الاطلاع عليها"
+                out_menu_choice "51" "generate-sudoer-request" "اكتب منحة JSON يمكن الاطلاع عليها"
                 ;;
             pt)
-                out_menu_choice "71" "generate-sudoer-request" "Escreva uma concessão JSON que se pode consultar"
+                out_menu_choice "51" "generate-sudoer-request" "Escreva uma concessão JSON que se pode consultar"
                 ;;
             ru)
-                out_menu_choice "71" "generate-sudoer-request" "Запишите JSON-разрешение, которое можно просмотреть"
+                out_menu_choice "51" "generate-sudoer-request" "Запишите JSON-разрешение, которое можно просмотреть"
                 ;;
             nl)
-                out_menu_choice "71" "generate-sudoer-request" "Schrijf een JSON-toekenning die u kunt bekijken"
+                out_menu_choice "51" "generate-sudoer-request" "Schrijf een JSON-toekenning die u kunt bekijken"
                 ;;
             el)
-                out_menu_choice "71" "generate-sudoer-request" "Γράψτε μια παραχώρηση JSON που μπορείτε να δείτε"
+                out_menu_choice "51" "generate-sudoer-request" "Γράψτε μια παραχώρηση JSON που μπορείτε να δείτε"
                 ;;
             *)
-                out_menu_choice "71" "generate-sudoer-request" "Write a JSON grant you can read"
+                out_menu_choice "51" "generate-sudoer-request" "Write a JSON grant you can read"
                 ;;
         esac
-        out_menu_choice "72" "submit-sudoer-request" "$(app_menu_text sudoers_72_long)"
-        out_menu_choice "73" "print-sudoers" "$(app_menu_text sudoers_73_long)"
-        out_menu_choice "74" "print-sudoers-install-script" "$(app_menu_text sudoers_74_long)"
-        out_menu_choice "75" "remove-project-sudoers" "$(app_menu_text sudoers_75_long)"
+        out_menu_choice "52" "submit-sudoer-request" "$(app_menu_text sudoers_52_long)"
+        out_menu_choice "53" "print-sudoers" "$(app_menu_text sudoers_53_long)"
+        out_menu_choice "54" "print-sudoers-install-script" "$(app_menu_text sudoers_54_long)"
+        out_menu_choice "55" "remove-project-sudoers" "$(app_menu_text sudoers_55_long)"
         out_plain "$(app_menu_text line_back)"
         out_msg_n "$(app_menu_text line_prompt)"
         _sc=""
         read -r _sc || true
         case "${_sc}" in
-            71|generate-sudoer-request) sshd_cmd_generate_sudoer_request; break ;;
-            72|submit-sudoer-request) sshd_cmd_submit_sudoer_request; break ;;
-            73|print-sudoers) sshd_cmd_print_sudoers; break ;;
-            74|print-sudoers-install-script) sshd_cmd_print_sudoers_install_script; break ;;
-            75|remove-project-sudoers) sshd_cmd_remove_project_sudoers; break ;;
+            51|generate-sudoer-request) sshd_cmd_generate_sudoer_request; break ;;
+            52|submit-sudoer-request) sshd_cmd_submit_sudoer_request; break ;;
+            53|print-sudoers) sshd_cmd_print_sudoers; break ;;
+            54|print-sudoers-install-script) sshd_cmd_print_sudoers_install_script; break ;;
+            55|remove-project-sudoers) sshd_cmd_remove_project_sudoers; break ;;
             0|q|exit|"") break ;;
             *)
                 out_warn "$(app_menu_text unknown_sudoers "${_sc}")"
@@ -8115,9 +8148,9 @@ app_lang_save() {
     return 0
 }
 
-# Last updated: 2026-10-02
+# Last updated: 2026-10-14
 # ALIGNMENT: requirement-shell-cli-language.md
-# Menu copy for APP_LANG (en, zh-Hant, es, fr, de, zh-Hans, ja, ko). Pure data. No input builtin.
+# Menu copy for APP_LANG (en, zh-Hans, zh-Hant, es, ar, fr, pt, ru, de, ja, ko, nl, el). Pure data. No input builtin.
 # A missing key prints the key. Call from the current shell or a command
 # substitution. Keep this body free of the four letters r, e, a, d in a row.
 app_menu_text() {
@@ -8487,7 +8520,7 @@ app_menu_text() {
                 *) _mt_out="stop then start" ;;
             esac
             ;;
-        self_81_long)
+        self_61_long)
             case "${_mt_lang}" in
                 zh-Hant) _mt_out="放置 ${APP_NAME}；確保 rc 與 Termux 的 openssh/termux-auth；啟動 sshd" ;;
                 es) _mt_out="colocar ${APP_NAME}; asegurar rc y openssh/termux-auth de Termux; iniciar sshd" ;;
@@ -8504,7 +8537,7 @@ app_menu_text() {
                 *) _mt_out="place ${APP_NAME}; ensure rc + Termux openssh/termux-auth; start sshd" ;;
             esac
             ;;
-        self_82_long)
+        self_62_long)
             case "${_mt_lang}" in
                 zh-Hant) _mt_out="顯示版本與詳細診斷（about）" ;;
                 es) _mt_out="mostrar la versión y el diagnóstico detallado (about)" ;;
@@ -8521,7 +8554,7 @@ app_menu_text() {
                 *) _mt_out="show version and detailed diagnostics (about)" ;;
             esac
             ;;
-        self_83_long)
+        self_63_long)
             case "${_mt_lang}" in
                 zh-Hant) _mt_out="顯示詳細診斷" ;;
                 es) _mt_out="mostrar el diagnóstico detallado" ;;
@@ -8538,7 +8571,7 @@ app_menu_text() {
                 *) _mt_out="show detailed diagnostics" ;;
             esac
             ;;
-        self_84_long)
+        self_64_long)
             case "${_mt_lang}" in
                 zh-Hant) _mt_out="比較本機與遠端版本" ;;
                 es) _mt_out="comparar la versión local con la remota" ;;
@@ -8555,7 +8588,7 @@ app_menu_text() {
                 *) _mt_out="compare local vs remote version" ;;
             esac
             ;;
-        self_85_long)
+        self_65_long)
             case "${_mt_lang}" in
                 zh-Hant) _mt_out="將 ${APP_NAME} 更新到較新的遠端版本" ;;
                 es) _mt_out="actualizar ${APP_NAME} a una versión remota más nueva" ;;
@@ -8572,7 +8605,7 @@ app_menu_text() {
                 *) _mt_out="update ${APP_NAME} to a newer remote version" ;;
             esac
             ;;
-        self_86_long)
+        self_66_long)
             case "${_mt_lang}" in
                 zh-Hant) _mt_out="移除 ${APP_NAME}（安全清理 PATH）" ;;
                 es) _mt_out="quitar ${APP_NAME} (limpieza segura de PATH)" ;;
@@ -8589,7 +8622,7 @@ app_menu_text() {
                 *) _mt_out="remove ${APP_NAME} (safe PATH cleanup)" ;;
             esac
             ;;
-        self_87_long)
+        self_67_long)
             case "${_mt_lang}" in
                 zh-Hant) _mt_out="只放置這個 CLI（複製這個檔案，或在管線輸入時下載）" ;;
                 es) _mt_out="colocar solo este CLI (copiar este archivo, o descargar si llega por una tubería)" ;;
@@ -8810,7 +8843,7 @@ app_menu_text() {
                 *) _mt_out="sudoers (grant and drafts)" ;;
             esac
             ;;
-        sudoers_72_long)
+        sudoers_52_long)
             case "${_mt_lang}" in
                 zh-Hant) _mt_out="將 JSON 授權排入待處理佇列" ;;
                 es) _mt_out="poner la concesión JSON en la cola de entrada" ;;
@@ -8827,7 +8860,7 @@ app_menu_text() {
                 *) _mt_out="Queue the JSON grant inbound" ;;
             esac
             ;;
-        sudoers_73_long)
+        sudoers_53_long)
             case "${_mt_lang}" in
                 zh-Hant) _mt_out="輸出 sudoers 草稿" ;;
                 es) _mt_out="emitir el borrador sudoers" ;;
@@ -8844,7 +8877,7 @@ app_menu_text() {
                 *) _mt_out="Emit sudoers draft" ;;
             esac
             ;;
-        sudoers_74_long)
+        sudoers_54_long)
             case "${_mt_lang}" in
                 zh-Hant) _mt_out="寫出管理者安裝腳本" ;;
                 es) _mt_out="escribir el script de instalación del administrador" ;;
@@ -8861,7 +8894,7 @@ app_menu_text() {
                 *) _mt_out="Write admin install script" ;;
             esac
             ;;
-        sudoers_75_long)
+        sudoers_55_long)
             case "${_mt_lang}" in
                 zh-Hant) _mt_out="只移除 sudoers 草稿" ;;
                 es) _mt_out="quitar solo el borrador sudoers" ;;
@@ -8876,6 +8909,23 @@ app_menu_text() {
                 nl) _mt_out="verwijder alleen het sudoers-concept" ;;
                 el) _mt_out="αφαίρεση μόνο του πρόχειρου sudoers" ;;
                 *) _mt_out="Remove sudoers draft only" ;;
+            esac
+            ;;
+        hidden_front)
+            case "${_mt_lang}" in
+                zh-Hant) _mt_out="sudoers 不適用於 ${_mt_extra}" ;;
+                es) _mt_out="sudoers no está disponible para ${_mt_extra}" ;;
+                fr) _mt_out="sudoers n'est pas disponible pour ${_mt_extra}" ;;
+                de) _mt_out="sudoers ist nicht verfügbar für ${_mt_extra}" ;;
+                zh-Hans) _mt_out="sudoers 不适用于 ${_mt_extra}" ;;
+                ja) _mt_out="sudoers は ${_mt_extra} では使えません" ;;
+                ko) _mt_out="sudoers 는 ${_mt_extra} 에서 사용할 수 없습니다" ;;
+                ar) _mt_out="sudoers غير متاح لـ ${_mt_extra}" ;;
+                pt) _mt_out="sudoers não está disponível para ${_mt_extra}" ;;
+                ru) _mt_out="sudoers недоступен для ${_mt_extra}" ;;
+                nl) _mt_out="sudoers is niet beschikbaar voor ${_mt_extra}" ;;
+                el) _mt_out="το sudoers δεν είναι διαθέσιμο για ${_mt_extra}" ;;
+                *) _mt_out="sudoers not available for ${_mt_extra}" ;;
             esac
             ;;
         hidden_client)
@@ -9101,19 +9151,19 @@ app_menu_text() {
             ;;
         help_version)
             case "${_mt_lang}" in
-                zh-Hant) _mt_out="顯示目前版本（TTY 選單 82 會執行 about）" ;;
-                es) _mt_out="mostrar la versión actual (el menú TTY 82 ejecuta about)" ;;
-                fr) _mt_out="afficher la version actuelle (le menu TTY 82 lance about)" ;;
-                de) _mt_out="aktuelle Version anzeigen (TTY-Menü 82 führt about aus)" ;;
-                zh-Hans) _mt_out="显示当前版本（TTY 菜单 82 会运行 about）" ;;
-                ja) _mt_out="現在のバージョンを表示（TTY メニュー 82 は about を実行）" ;;
-                ko) _mt_out="현재 버전 표시(TTY 메뉴 82는 about 실행)" ;;
-                ar) _mt_out="عرض الإصدار الحالي (القائمة 82 على TTY تشغل about)" ;;
-                pt) _mt_out="Mostrar a versão atual (o menu TTY 82 executa about)" ;;
-                ru) _mt_out="Показать текущую версию (пункт TTY 82 запускает about)" ;;
-                nl) _mt_out="Toon de huidige versie (TTY-menu 82 voert about uit)" ;;
-                el) _mt_out="Εμφάνιση τρέχουσας έκδοσης (το μενού TTY 82 εκτελεί about)" ;;
-                *) _mt_out="Show current version (TTY menu 82 runs about)" ;;
+                zh-Hant) _mt_out="顯示目前版本（TTY 選單 62 會執行 about）" ;;
+                es) _mt_out="mostrar la versión actual (el menú TTY 62 ejecuta about)" ;;
+                fr) _mt_out="afficher la version actuelle (le menu TTY 62 lance about)" ;;
+                de) _mt_out="aktuelle Version anzeigen (TTY-Menü 62 führt about aus)" ;;
+                zh-Hans) _mt_out="显示当前版本（TTY 菜单 62 会运行 about）" ;;
+                ja) _mt_out="現在のバージョンを表示（TTY メニュー 62 は about を実行）" ;;
+                ko) _mt_out="현재 버전 표시(TTY 메뉴 62는 about 실행)" ;;
+                ar) _mt_out="عرض الإصدار الحالي (القائمة 62 على TTY تشغل about)" ;;
+                pt) _mt_out="Mostrar a versão atual (o menu TTY 62 executa about)" ;;
+                ru) _mt_out="Показать текущую версию (пункт TTY 62 запускает about)" ;;
+                nl) _mt_out="Toon de huidige versie (TTY-menu 62 voert about uit)" ;;
+                el) _mt_out="Εμφάνιση τρέχουσας έκδοσης (το μενού TTY 62 εκτελεί about)" ;;
+                *) _mt_out="Show current version (TTY menu 62 runs about)" ;;
             esac
             ;;
         help_about)
@@ -9917,19 +9967,19 @@ app_menu_text() {
             ;;
         help_menu)
             case "${_mt_lang}" in
-                zh-Hant) _mt_out="編號樹：1 用戶端、2 伺服器端、5 語言、7 sudoers、8 自我管理、9 離開。語言 51 English、52 简体中文、53 繁體中文、54 Español、55 العربية、56 Français、57 Português、58 Русский、59 Deutsch、60 日本語、61 한국어、62 Nederlands、63 Ελληνικά。用戶端 11… dns/ssh/download/upload。伺服器 21… status/start/stop/restart。自我管理 81… install/version/about、87 self-install。子選單 0 返回。別名：main" ;;
-                es) _mt_out="Árbol numerado: 1 cliente, 2 servidor, 5 idioma, 7 sudoers, 8 autogestión, 9 Salir. Idiomas 51 English, 52 简体中文, 53 繁體中文, 54 Español, 55 العربية, 56 Français, 57 Português, 58 Русский, 59 Deutsch, 60 日本語, 61 한국어, 62 Nederlands, 63 Ελληνικά. Cliente 11… dns/ssh/download/upload. Servidor 21… status/start/stop/restart. Autogestión 81… install/version/about, 87 self-install. Submenús 0 Atrás. Alias: main" ;;
-                fr) _mt_out="Arbre numéroté : 1 client, 2 serveur, 5 langue, 7 sudoers, 8 autogestion, 9 Quitter. Langues 51 English, 52 简体中文, 53 繁體中文, 54 Español, 55 العربية, 56 Français, 57 Português, 58 Русский, 59 Deutsch, 60 日本語, 61 한국어, 62 Nederlands, 63 Ελληνικά. Client 11… dns/ssh/download/upload. Serveur 21… status/start/stop/restart. Autogestion 81… install/version/about, 87 self-install. Sous-menus 0 Retour. Alias : main" ;;
-                de) _mt_out="Nummerierter Baum: 1 Client, 2 Server, 5 Sprache, 7 sudoers, 8 Selbstverwaltung, 9 Beenden. Sprachen 51 English, 52 简体中文, 53 繁體中文, 54 Español, 55 العربية, 56 Français, 57 Português, 58 Русский, 59 Deutsch, 60 日本語, 61 한국어, 62 Nederlands, 63 Ελληνικά. Client 11… dns/ssh/download/upload. Server 21… status/start/stop/restart. Selbstverwaltung 81… install/version/about, 87 self-install. Untermenüs 0 Zurück. Alias: main" ;;
-                zh-Hans) _mt_out="编号树：1 客户端、2 服务器端、5 语言、7 sudoers、8 自我管理、9 离开。语言 51 English、52 简体中文、53 繁體中文、54 Español、55 العربية、56 Français、57 Português、58 Русский、59 Deutsch、60 日本語、61 한국어、62 Nederlands、63 Ελληνικά。客户端 11… dns/ssh/download/upload。服务器 21… status/start/stop/restart。自我管理 81… install/version/about、87 self-install。子菜单 0 返回。别名：main" ;;
-                ja) _mt_out="番号の木: 1 クライアント、2 サーバー、5 言語、7 sudoers、8 自己管理、9 終了。言語 51 English、52 简体中文、53 繁體中文、54 Español、55 العربية、56 Français、57 Português、58 Русский、59 Deutsch、60 日本語、61 한국어、62 Nederlands、63 Ελληνικά。クライアント 11… dns/ssh/download/upload。サーバー 21… status/start/stop/restart。自己管理 81… install/version/about、87 self-install。サブメニュー 0 戻る。別名: main" ;;
-                ko) _mt_out="번호 나무: 1 클라이언트, 2 서버, 5 언어, 7 sudoers, 8 자기관리, 9 종료. 언어 51 English, 52 简体中文, 53 繁體中文, 54 Español, 55 العربية, 56 Français, 57 Português, 58 Русский, 59 Deutsch, 60 日本語, 61 한국어, 62 Nederlands, 63 Ελληνικά. 클라이언트 11… dns/ssh/download/upload. 서버 21… status/start/stop/restart. 자기관리 81… install/version/about, 87 self-install. 하위 메뉴 0 뒤로. 별칭: main" ;;
-                ar) _mt_out="شجرة مرقمة: 1 عميل، 2 خادم، 5 لغة، 7 sudoers، 8 إدارة-ذاتية، 9 خروج. اللغات 51 English، 52 简体中文، 53 繁體中文، 54 Español، 55 العربية، 56 Français، 57 Português، 58 Русский، 59 Deutsch، 60 日本語، 61 한국어، 62 Nederlands، 63 Ελληνικά. العميل 11… dns/ssh/download/upload. الخادم 21… status/start/stop/restart. الإدارة 81… install/version/about، 87 self-install. القوائم الفرعية 0 رجوع. الاسم البديل: main" ;;
-                pt) _mt_out="Árvore numerada: 1 cliente, 2 servidor, 5 idioma, 7 sudoers, 8 autogestão, 9 Sair. Idiomas 51 English, 52 简体中文, 53 繁體中文, 54 Español, 55 العربية, 56 Français, 57 Português, 58 Русский, 59 Deutsch, 60 日本語, 61 한국어, 62 Nederlands, 63 Ελληνικά. Cliente 11… dns/ssh/download/upload. Servidor 21… status/start/stop/restart. Autogestão 81… install/version/about, 87 self-install. Submenus 0 Voltar. Apelido: main" ;;
-                ru) _mt_out="Нумерованное дерево: 1 клиент, 2 сервер, 5 язык, 7 sudoers, 8 самоуправление, 9 Выход. Языки 51 English, 52 简体中文, 53 繁體中文, 54 Español, 55 العربية, 56 Français, 57 Português, 58 Русский, 59 Deutsch, 60 日本語, 61 한국어, 62 Nederlands, 63 Ελληνικά. Клиент 11… dns/ssh/download/upload. Сервер 21… status/start/stop/restart. Самоуправление 81… install/version/about, 87 self-install. Подменю 0 Назад. Псевдоним: main" ;;
-                nl) _mt_out="Genummerde boom: 1 client, 2 server, 5 taal, 7 sudoers, 8 zelfbeheer, 9 Afsluiten. Talen 51 English, 52 简体中文, 53 繁體中文, 54 Español, 55 العربية, 56 Français, 57 Português, 58 Русский, 59 Deutsch, 60 日本語, 61 한국어, 62 Nederlands, 63 Ελληνικά. Client 11… dns/ssh/download/upload. Server 21… status/start/stop/restart. Zelfbeheer 81… install/version/about, 87 self-install. Submenu's 0 Terug. Alias: main" ;;
-                el) _mt_out="Αριθμημένο δέντρο: 1 πελάτης, 2 διακομιστής, 5 γλώσσα, 7 sudoers, 8 αυτοδιαχείριση, 9 Έξοδος. Γλώσσες 51 English, 52 简体中文, 53 繁體中文, 54 Español, 55 العربية, 56 Français, 57 Português, 58 Русский, 59 Deutsch, 60 日本語, 61 한국어, 62 Nederlands, 63 Ελληνικά. Πελάτης 11… dns/ssh/download/upload. Διακομιστής 21… status/start/stop/restart. Αυτοδιαχείριση 81… install/version/about, 87 self-install. Υπομενού 0 Πίσω. Ψευδώνυμο: main" ;;
-                *) _mt_out="Numbered tree: 1 client-side, 2 server-side, 5 language, 7 sudoers, 8 self-management, 9 Exit. Language 51 English, 52 Simplified Chinese, 53 Traditional Chinese, 54 Spanish, 55 Arabic, 56 French, 57 Portuguese, 58 Russian, 59 German, 60 Japanese, 61 Korean, 62 Dutch, 63 Greek. Client 11… dns/ssh/download/upload; server 21… status/start/stop/restart; self-management 81… install/version/about, 87 self-install. Submenus 0 Back. Alias: main" ;;
+                zh-Hant) _mt_out="編號樹：1 用戶端、2 伺服器端、5 sudoers、6 自我管理、7 語言、9 離開。語言 71 English、72 简体中文、73 繁體中文、74 Español、75 العربية、76 Français、77 Português、78 Русский、79 Deutsch、80 日本語、81 한국어、82 Nederlands、83 Ελληνικά。用戶端 11… dns/ssh/download/upload。伺服器 21… status/start/stop/restart。自我管理 61… install/version/about、67 self-install。子選單 0 返回。別名：main" ;;
+                es) _mt_out="Árbol numerado: 1 cliente, 2 servidor, 5 sudoers, 6 autogestión, 7 idioma, 9 Salir. Idiomas 71 English, 72 简体中文, 73 繁體中文, 74 Español, 75 العربية, 76 Français, 77 Português, 78 Русский, 79 Deutsch, 80 日本語, 81 한국어, 82 Nederlands, 83 Ελληνικά. Cliente 11… dns/ssh/download/upload. Servidor 21… status/start/stop/restart. Autogestión 61… install/version/about, 67 self-install. Submenús 0 Atrás. Alias: main" ;;
+                fr) _mt_out="Arbre numéroté : 1 client, 2 serveur, 5 sudoers, 6 autogestion, 7 langue, 9 Quitter. Langues 71 English, 72 简体中文, 73 繁體中文, 74 Español, 75 العربية, 76 Français, 77 Português, 78 Русский, 79 Deutsch, 80 日本語, 81 한국어, 82 Nederlands, 83 Ελληνικά. Client 11… dns/ssh/download/upload. Serveur 21… status/start/stop/restart. Autogestion 61… install/version/about, 67 self-install. Sous-menus 0 Retour. Alias : main" ;;
+                de) _mt_out="Nummerierter Baum: 1 Client, 2 Server, 5 sudoers, 6 Selbstverwaltung, 7 Sprache, 9 Beenden. Sprachen 71 English, 72 简体中文, 73 繁體中文, 74 Español, 75 العربية, 76 Français, 77 Português, 78 Русский, 79 Deutsch, 80 日本語, 81 한국어, 82 Nederlands, 83 Ελληνικά. Client 11… dns/ssh/download/upload. Server 21… status/start/stop/restart. Selbstverwaltung 61… install/version/about, 67 self-install. Untermenüs 0 Zurück. Alias: main" ;;
+                zh-Hans) _mt_out="编号树：1 客户端、2 服务器端、5 sudoers、6 自我管理、7 语言、9 离开。语言 71 English、72 简体中文、73 繁體中文、74 Español、75 العربية、76 Français、77 Português、78 Русский、79 Deutsch、80 日本語、81 한국어、82 Nederlands、83 Ελληνικά。客户端 11… dns/ssh/download/upload。服务器 21… status/start/stop/restart。自我管理 61… install/version/about、67 self-install。子菜单 0 返回。别名：main" ;;
+                ja) _mt_out="番号の木: 1 クライアント、2 サーバー、5 sudoers、6 自己管理、7 言語、9 終了。言語 71 English、72 简体中文、73 繁體中文、74 Español、75 العربية、76 Français、77 Português、78 Русский、79 Deutsch、80 日本語、81 한국어、82 Nederlands、83 Ελληνικά。クライアント 11… dns/ssh/download/upload。サーバー 21… status/start/stop/restart。自己管理 61… install/version/about、67 self-install。サブメニュー 0 戻る。別名: main" ;;
+                ko) _mt_out="번호 나무: 1 클라이언트, 2 서버, 5 sudoers, 6 자기관리, 7 언어, 9 종료. 언어 71 English, 72 简体中文, 73 繁體中文, 74 Español, 75 العربية, 76 Français, 77 Português, 78 Русский, 79 Deutsch, 80 日本語, 81 한국어, 82 Nederlands, 83 Ελληνικά. 클라이언트 11… dns/ssh/download/upload. 서버 21… status/start/stop/restart. 자기관리 61… install/version/about, 67 self-install. 하위 메뉴 0 뒤로. 별칭: main" ;;
+                ar) _mt_out="شجرة مرقمة: 1 عميل، 2 خادم، 5 sudoers، 6 إدارة-ذاتية، 7 لغة، 9 خروج. اللغات 71 English، 72 简体中文، 73 繁體中文، 74 Español، 75 العربية، 76 Français، 77 Português، 78 Русский، 79 Deutsch، 80 日本語، 81 한국어، 82 Nederlands، 83 Ελληνικά. العميل 11… dns/ssh/download/upload. الخادم 21… status/start/stop/restart. الإدارة 61… install/version/about، 67 self-install. القوائم الفرعية 0 رجوع. الاسم البديل: main" ;;
+                pt) _mt_out="Árvore numerada: 1 cliente, 2 servidor, 5 sudoers, 6 autogestão, 7 idioma, 9 Sair. Idiomas 71 English, 72 简体中文, 73 繁體中文, 74 Español, 75 العربية, 76 Français, 77 Português, 78 Русский, 79 Deutsch, 80 日本語, 81 한국어, 82 Nederlands, 83 Ελληνικά. Cliente 11… dns/ssh/download/upload. Servidor 21… status/start/stop/restart. Autogestão 61… install/version/about, 67 self-install. Submenus 0 Voltar. Apelido: main" ;;
+                ru) _mt_out="Нумерованное дерево: 1 клиент, 2 сервер, 5 sudoers, 6 самоуправление, 7 язык, 9 Выход. Языки 71 English, 72 简体中文, 73 繁體中文, 74 Español, 75 العربية, 76 Français, 77 Português, 78 Русский, 79 Deutsch, 80 日本語, 81 한국어, 82 Nederlands, 83 Ελληνικά. Клиент 11… dns/ssh/download/upload. Сервер 21… status/start/stop/restart. Самоуправление 61… install/version/about, 67 self-install. Подменю 0 Назад. Псевдоним: main" ;;
+                nl) _mt_out="Genummerde boom: 1 client, 2 server, 5 sudoers, 6 zelfbeheer, 7 taal, 9 Afsluiten. Talen 71 English, 72 简体中文, 73 繁體中文, 74 Español, 75 العربية, 76 Français, 77 Português, 78 Русский, 79 Deutsch, 80 日本語, 81 한국어, 82 Nederlands, 83 Ελληνικά. Client 11… dns/ssh/download/upload. Server 21… status/start/stop/restart. Zelfbeheer 61… install/version/about, 67 self-install. Submenu's 0 Terug. Alias: main" ;;
+                el) _mt_out="Αριθμημένο δέντρο: 1 πελάτης, 2 διακομιστής, 5 sudoers, 6 αυτοδιαχείριση, 7 γλώσσα, 9 Έξοδος. Γλώσσες 71 English, 72 简体中文, 73 繁體中文, 74 Español, 75 العربية, 76 Français, 77 Português, 78 Русский, 79 Deutsch, 80 日本語, 81 한국어, 82 Nederlands, 83 Ελληνικά. Πελάτης 11… dns/ssh/download/upload. Διακομιστής 21… status/start/stop/restart. Αυτοδιαχείριση 61… install/version/about, 67 self-install. Υπομενού 0 Πίσω. Ψευδώνυμο: main" ;;
+                *) _mt_out="Numbered tree: 1 client-side, 2 server-side, 5 sudoers, 6 self-management, 7 language, 9 Exit. Language 71 English, 72 Simplified Chinese, 73 Traditional Chinese, 74 Spanish, 75 Arabic, 76 French, 77 Portuguese, 78 Russian, 79 German, 80 Japanese, 81 Korean, 82 Dutch, 83 Greek. Client 11… dns/ssh/download/upload; server 21… status/start/stop/restart; self-management 61… install/version/about, 67 self-install. Submenus 0 Back. Alias: main" ;;
             esac
             ;;
         about_title)
@@ -10569,29 +10619,29 @@ app_menu_text() {
     unset _mt_key _mt_extra _mt_lang _mt_out
 }
 
-# Last updated: 2026-10-02
+# Last updated: 2026-10-14
 # ALIGNMENT: requirement-shell-cli-language.md · requirement-shell-cli-default-interaction.md
-# Parent 5. Language rows are reserved 50-69 (at most 20 languages).
-# Assigned: 51 en, 52 zh-Hans, 53 zh-Hant, 54 es, 55 ar, 56 fr,
-# 57 pt, 58 ru, 59 de, 60 ja, 61 ko, 62 nl, 63 el.
-# 50 and 64-69 stay unprinted. Each assigned row returns to the front board.
+# Parent 7. Language rows are reserved 70-89 (at most 20 languages).
+# Assigned: 71 en, 72 zh-Hans, 73 zh-Hant, 74 es, 75 ar, 76 fr,
+# 77 pt, 78 ru, 79 de, 80 ja, 81 ko, 82 nl, 83 el.
+# 70 and 84-89 stay unprinted. Each assigned row returns to the front board.
 # 0 / empty / EOF is Back. The choice is a current-shell input builtin.
 app_cmd_menu_language() {
     while true; do
         out_info "**${APP_NAME}**(*${VERSION}*) — $(app_menu_text cat_language)"
-        out_menu_choice "51" "English" "$(app_menu_text lang_en_long)"
-        out_menu_choice "52" "简体中文" "$(app_menu_text lang_zh_hans_long)"
-        out_menu_choice "53" "繁體中文" "$(app_menu_text lang_zh_long)"
-        out_menu_choice "54" "Español" "$(app_menu_text lang_es_long)"
-        out_menu_choice "55" "العربية" "$(app_menu_text lang_ar_long)"
-        out_menu_choice "56" "Français" "$(app_menu_text lang_fr_long)"
-        out_menu_choice "57" "Português" "$(app_menu_text lang_pt_long)"
-        out_menu_choice "58" "Русский" "$(app_menu_text lang_ru_long)"
-        out_menu_choice "59" "Deutsch" "$(app_menu_text lang_de_long)"
-        out_menu_choice "60" "日本語" "$(app_menu_text lang_ja_long)"
-        out_menu_choice "61" "한국어" "$(app_menu_text lang_ko_long)"
-        out_menu_choice "62" "Nederlands" "$(app_menu_text lang_nl_long)"
-        out_menu_choice "63" "Ελληνικά" "$(app_menu_text lang_el_long)"
+        out_menu_choice "71" "English" "$(app_menu_text lang_en_long)"
+        out_menu_choice "72" "简体中文" "$(app_menu_text lang_zh_hans_long)"
+        out_menu_choice "73" "繁體中文" "$(app_menu_text lang_zh_long)"
+        out_menu_choice "74" "Español" "$(app_menu_text lang_es_long)"
+        out_menu_choice "75" "العربية" "$(app_menu_text lang_ar_long)"
+        out_menu_choice "76" "Français" "$(app_menu_text lang_fr_long)"
+        out_menu_choice "77" "Português" "$(app_menu_text lang_pt_long)"
+        out_menu_choice "78" "Русский" "$(app_menu_text lang_ru_long)"
+        out_menu_choice "79" "Deutsch" "$(app_menu_text lang_de_long)"
+        out_menu_choice "80" "日本語" "$(app_menu_text lang_ja_long)"
+        out_menu_choice "81" "한국어" "$(app_menu_text lang_ko_long)"
+        out_menu_choice "82" "Nederlands" "$(app_menu_text lang_nl_long)"
+        out_menu_choice "83" "Ελληνικά" "$(app_menu_text lang_el_long)"
         out_plain "$(app_menu_text line_back)"
         out_msg_n "$(app_menu_text line_prompt)"
         _choice=""
@@ -10600,7 +10650,7 @@ app_cmd_menu_language() {
             return 0
         fi
         case "${_choice}" in
-            51|english|en|English)
+            71|english|en|English)
                 if app_lang_save en; then
                     out_info "$(app_menu_text lang_saved)"
                 else
@@ -10609,7 +10659,7 @@ app_cmd_menu_language() {
                 unset _choice
                 return 0
                 ;;
-            52|simplified-chinese|zh-hans|zh-Hans|简体中文)
+            72|simplified-chinese|zh-hans|zh-Hans|简体中文)
                 if app_lang_save zh-Hans; then
                     out_info "$(app_menu_text lang_saved)"
                 else
@@ -10618,7 +10668,7 @@ app_cmd_menu_language() {
                 unset _choice
                 return 0
                 ;;
-            53|traditional-chinese|zh-hant|zh-Hant|繁體中文)
+            73|traditional-chinese|zh-hant|zh-Hant|繁體中文)
                 if app_lang_save zh-Hant; then
                     out_info "$(app_menu_text lang_saved)"
                 else
@@ -10627,7 +10677,7 @@ app_cmd_menu_language() {
                 unset _choice
                 return 0
                 ;;
-            54|spanish|es|Español|español)
+            74|spanish|es|Español|español)
                 if app_lang_save es; then
                     out_info "$(app_menu_text lang_saved)"
                 else
@@ -10636,7 +10686,7 @@ app_cmd_menu_language() {
                 unset _choice
                 return 0
                 ;;
-            55|arabic|ar|العربية|عربي)
+            75|arabic|ar|العربية|عربي)
                 if app_lang_save ar; then
                     out_info "$(app_menu_text lang_saved)"
                 else
@@ -10645,7 +10695,7 @@ app_cmd_menu_language() {
                 unset _choice
                 return 0
                 ;;
-            56|french|fr|Français|français)
+            76|french|fr|Français|français)
                 if app_lang_save fr; then
                     out_info "$(app_menu_text lang_saved)"
                 else
@@ -10654,7 +10704,7 @@ app_cmd_menu_language() {
                 unset _choice
                 return 0
                 ;;
-            57|portuguese|pt|Português|português|portugues)
+            77|portuguese|pt|Português|português|portugues)
                 if app_lang_save pt; then
                     out_info "$(app_menu_text lang_saved)"
                 else
@@ -10663,7 +10713,7 @@ app_cmd_menu_language() {
                 unset _choice
                 return 0
                 ;;
-            58|russian|ru|Русский|русский)
+            78|russian|ru|Русский|русский)
                 if app_lang_save ru; then
                     out_info "$(app_menu_text lang_saved)"
                 else
@@ -10672,7 +10722,7 @@ app_cmd_menu_language() {
                 unset _choice
                 return 0
                 ;;
-            59|german|de|Deutsch|deutsch)
+            79|german|de|Deutsch|deutsch)
                 if app_lang_save de; then
                     out_info "$(app_menu_text lang_saved)"
                 else
@@ -10681,7 +10731,7 @@ app_cmd_menu_language() {
                 unset _choice
                 return 0
                 ;;
-            60|japanese|ja|日本語)
+            80|japanese|ja|日本語)
                 if app_lang_save ja; then
                     out_info "$(app_menu_text lang_saved)"
                 else
@@ -10690,7 +10740,7 @@ app_cmd_menu_language() {
                 unset _choice
                 return 0
                 ;;
-            61|korean|ko|한국어)
+            81|korean|ko|한국어)
                 if app_lang_save ko; then
                     out_info "$(app_menu_text lang_saved)"
                 else
@@ -10699,7 +10749,7 @@ app_cmd_menu_language() {
                 unset _choice
                 return 0
                 ;;
-            62|dutch|nl|Nederlands|nederlands)
+            82|dutch|nl|Nederlands|nederlands)
                 if app_lang_save nl; then
                     out_info "$(app_menu_text lang_saved)"
                 else
@@ -10708,7 +10758,7 @@ app_cmd_menu_language() {
                 unset _choice
                 return 0
                 ;;
-            63|greek|el|Ελληνικά|ελληνικά)
+            83|greek|el|Ελληνικά|ελληνικά)
                 if app_lang_save el; then
                     out_info "$(app_menu_text lang_saved)"
                 else
@@ -10901,20 +10951,20 @@ app_cmd_menu_server() {
     done
 }
 
-# Last updated: 2026-09-28
+# Last updated: 2026-10-14
 # ALIGNMENT: requirement-shell-cli-default-interaction
 # A valid leaf returns to the front board. Unknown choice retries this layer.
-# 0 / empty / EOF is Back.
+# 0 / empty / EOF is Back. Children are 61-67 under front 6.
 app_cmd_menu_self() {
     while true; do
         out_info "**${APP_NAME}**(*${VERSION}*) — $(app_menu_text cat_self)"
-        out_menu_choice "81" "install" "$(app_menu_text self_81_long)"
-        out_menu_choice "82" "version" "$(app_menu_text self_82_long)"
-        out_menu_choice "83" "about" "$(app_menu_text self_83_long)"
-        out_menu_choice "84" "version-check" "$(app_menu_text self_84_long)"
-        out_menu_choice "85" "self-update" "$(app_menu_text self_85_long)"
-        out_menu_choice "86" "self-uninstall" "$(app_menu_text self_86_long)"
-        out_menu_choice "87" "self-install" "$(app_menu_text self_87_long)"
+        out_menu_choice "61" "install" "$(app_menu_text self_61_long)"
+        out_menu_choice "62" "version" "$(app_menu_text self_62_long)"
+        out_menu_choice "63" "about" "$(app_menu_text self_63_long)"
+        out_menu_choice "64" "version-check" "$(app_menu_text self_64_long)"
+        out_menu_choice "65" "self-update" "$(app_menu_text self_65_long)"
+        out_menu_choice "66" "self-uninstall" "$(app_menu_text self_66_long)"
+        out_menu_choice "67" "self-install" "$(app_menu_text self_67_long)"
         out_plain "$(app_menu_text line_back)"
         out_msg_n "$(app_menu_text line_prompt)"
         _choice=""
@@ -10923,37 +10973,37 @@ app_cmd_menu_self() {
             return 0
         fi
         case "${_choice}" in
-            81|install)
+            61|install)
                 inst_perform_install
                 unset _choice
                 return 0
                 ;;
-            82|version)
+            62|version)
                 app_about
                 unset _choice
                 return 0
                 ;;
-            83|about)
+            63|about)
                 app_about
                 unset _choice
                 return 0
                 ;;
-            84|version-check)
+            64|version-check)
                 ver_check
                 unset _choice
                 return 0
                 ;;
-            85|self-update)
+            65|self-update)
                 inst_self_update
                 unset _choice
                 return 0
                 ;;
-            86|self-uninstall)
+            66|self-uninstall)
                 inst_self_uninstall
                 unset _choice
                 return 0
                 ;;
-            87|self-install)
+            67|self-install)
                 inst_self_install
                 unset _choice
                 return 0
@@ -10974,16 +11024,18 @@ app_cmd_menu_self() {
     done
 }
 
-# Last updated: 2026-10-02
+# Last updated: 2026-10-14
 # ALIGNMENT: requirement-shell-cli-default-interaction · requirement-shell-cli-language.md · requirement-shell-cli-zero-arguments
-# Front board loops until Exit. Category rows open a submenu. Row 5 opens
-# language. Rows 50-69 are reserved for at most 20 languages.
-# Assigned: 51 English, 52 Simplified Chinese, 53 Traditional Chinese,
-# 54 Spanish, 55 Arabic, 56 French, 57 Portuguese, 58 Russian, 59 German,
-# 60 Japanese, 61 Korean, 62 Dutch, 63 Greek. 50 and 64-69 stay unprinted.
-# POSIX Linux row 7 opens
-# sudoers (71-75). A finished leaf redisplays this board. Unknown choice
-# retries this layer. Row 7 stays reserved when hidden. Front 6 is not a row.
+# Front board loops until Exit. Category rows open a submenu.
+# POSIX Linux row 5 opens sudoers (51-55). Termux, Git Bash, and Windows cmd
+# omit row 5 and print why before the numbers. Row 5 stays reserved when hidden.
+# Row 6 opens self-management (61-67). Row 7 opens language.
+# Rows 70-89 are reserved for at most 20 languages.
+# Assigned: 71 English, 72 Simplified Chinese, 73 Traditional Chinese,
+# 74 Spanish, 75 Arabic, 76 French, 77 Portuguese, 78 Russian, 79 German,
+# 80 Japanese, 81 Korean, 82 Dutch, 83 Greek. 70 and 84-89 stay unprinted.
+# A finished leaf redisplays this board. Unknown choice retries this layer.
+# Front 8 is not a row.
 app_cmd_menu() {
     if [ "${JSON}" -eq 1 ] || [ "${QUIET}" -eq 1 ] || [ "${TTY}" -ne 1 ]; then
         out_die "menu needs a terminal. Run a named command instead, for example: ${APP_NAME} status"
@@ -10994,13 +11046,16 @@ app_cmd_menu() {
     fi
     while true; do
         out_info "**${APP_NAME}**(*${VERSION}*)"
+        if [ "${_show_sudoers}" -eq 0 ]; then
+            out_info "$(app_menu_text hidden_front "$(sshd_host_normal_user_only_label)")"
+        fi
         out_menu_choice "1" "$(app_menu_text cat_client)" "$(app_menu_text front_client_long)"
         out_menu_choice "2" "$(app_menu_text cat_server)" "$(app_menu_text front_server_long)"
-        out_menu_choice "5" "$(app_menu_text cat_language)" "$(app_menu_text front_language_long)"
         if [ "${_show_sudoers}" -eq 1 ]; then
-            out_menu_choice "7" "sudoers" "$(app_menu_text front_sudoers_long)"
+            out_menu_choice "5" "sudoers" "$(app_menu_text front_sudoers_long)"
         fi
-        out_menu_choice "8" "$(app_menu_text cat_self)" "$(app_menu_text front_self_long)"
+        out_menu_choice "6" "$(app_menu_text cat_self)" "$(app_menu_text front_self_long)"
+        out_menu_choice "7" "$(app_menu_text cat_language)" "$(app_menu_text front_language_long)"
         out_plain "$(app_menu_text line_exit)"
         out_msg_n "$(app_menu_text line_prompt)"
         _choice=""
@@ -11011,7 +11066,7 @@ app_cmd_menu() {
         case "${_choice}" in
             1|client-side|用戶端|客户端|cliente|client|Client|クライアント|클라이언트|عميل|клиент|πελάτης) app_cmd_menu_client; continue ;;
             2|server-side|伺服器端|服务器端|servidor|serveur|Server|server|サーバー|서버|خادم|сервер|διακομιστής) app_cmd_menu_server; continue ;;
-            7)
+            5)
                 if [ "${_show_sudoers}" -eq 1 ]; then
                     sshd_cmd_sudoers_menu
                     continue
@@ -11019,8 +11074,8 @@ app_cmd_menu() {
                 out_warn "$(app_menu_text unknown_menu "${_choice}")"
                 continue
                 ;;
-            5|language|語言|语言|idioma|langue|Sprache|sprache|言語|언어|لغة|язык|taal|γλώσσα) app_cmd_menu_language; continue ;;
-            8|self-management|自我管理|autogestión|autogestão|autogestion|Selbstverwaltung|selbstverwaltung|自己管理|자기관리|إدارة-ذاتية|самоуправление|zelfbeheer|αυτοδιαχείριση) app_cmd_menu_self; continue ;;
+            6|self-management|自我管理|autogestión|autogestão|autogestion|Selbstverwaltung|selbstverwaltung|自己管理|자기관리|إدارة-ذاتية|самоуправление|zelfbeheer|αυτοδιαχείριση) app_cmd_menu_self; continue ;;
+            7|language|語言|语言|idioma|langue|Sprache|sprache|言語|언어|لغة|язык|taal|γλώσσα) app_cmd_menu_language; continue ;;
             9|99|999|exit|"")
                 unset _choice _show_sudoers
                 return 0

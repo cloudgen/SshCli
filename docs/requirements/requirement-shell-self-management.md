@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-shell-self-management.md  
-**Status**: Active (Version 1.1.2)  
+**Status**: Active (Version 1.1.3)  
 **Philosophy**: CIAO / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered)
 
 ## 1. Purpose
@@ -125,7 +125,7 @@ Root may write global install path; non-root uses user path. Do not assume root 
 |------|------------------------|
 | **Product / binary** | `sshd-cli` (`APP_NAME`) |
 | **Implementation file** | Repo root `./sshd-cli` |
-| **Dispatcher** | `app_main` routes `version-check` → `ver_check`; `self-update` → `inst_self_update`; `self-uninstall` → `inst_self_uninstall`; argv `version` → `app_version`; `about` → `app_about`. TTY **82** / typed `version` → `app_about` (**INC-20260914-001**). |
+| **Dispatcher** | `app_main` routes `version-check` → `ver_check`; `self-update` → `inst_self_update`; `self-uninstall` → `inst_self_uninstall`; argv `version` → `app_version`; `about` → `app_about`. TTY **62** / typed `version` → `app_about` (**INC-20260914-001**). |
 | **Install orchestrator SSOT** | `inst_perform_install` (+ prepare / download with or without checksum / atomic install) |
 | **Version compare** | `ver_gt` (pure POSIX); local version via `inst_get_version` |
 | **Install presence** | `inst_is_installed` |
@@ -288,6 +288,6 @@ Work claiming self-management support for sshd-cli is **not done** if any of the
 
 ---
 
-**Last Updated**: 2026-09-09 (PATH/profile bodies → `requirement-shell-path-and-shell-support`)  
+**Last Updated**: 2026-10-14 (1.1.3 TTY menu **62** runs about. PATH/profile bodies → `requirement-shell-path-and-shell-support`)  
 **Owner**: sshd-cli project maintainers  
 **Alignment**: Registry `docs/requirements/index.md`; CIAO Principles 1, 2, 3, 5, 10, 11, 14, 4, 20 (v2.10.2) (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

@@ -26,7 +26,7 @@ Durable failure modes. **Always re-check on product review.**
 | L-DNS-06 | Suite copies this-login Host alias or LAN IPv4 into `tests/**` (exposes developer computer) | Mint `t_rand_host` / `t_rand_ip`; file-leaks C6; **PP-A-26** / **PP-C-21**; **INC-20260909-003**; TP-DNS-37 · TP-DNS-38 | open watch |
 | L-DL-01 | TTY `download` skips the `ssh` user prompt, so BatchMode ssh uses this login / Host User with no override | Same user walk as `ssh`; `-l` when non-empty; **INC-20260912-001**; TP-DL-10..13 | open watch |
 | L-DL-02 | `download` refuses `~/folder` as if `~` were a metacharacter; single-quoting `~/…` blocks remote tilde | Allow `~/folder`; remote `"$HOME"/'folder'`; refuse `~` alone and `~user/…`; **INC-20260912-002**; TP-DL-14..16 | open watch |
-| L-TTY-THIN-01 | TTY numbered row reprints the board header (thin sibling of a richer diagnostic on the same board) | TTY **82** / typed `version` run `about`; argv `version` stays thin; do not number `help` / `menu` / `where-is-me` / `config` beside `status`; **INC-20260914-001**; **TP-CLI-21** | open watch |
+| L-TTY-THIN-01 | TTY numbered row reprints the board header (thin sibling of a richer diagnostic on the same board) | TTY **62** / typed `version` run `about`; argv `version` stays thin; do not number `help` / `menu` / `where-is-me` / `config` beside `status`; **INC-20260914-001**; **TP-CLI-21** | open watch |
 
 **Related-product only (do not re-apply as this origin’s law):** L-DEPOSIT-01, L-SUDOERS-01..05, L-OVERWRITE-01 stay on folder-backup. Type O empty-argv / online-channel lessons stay on products that own those surfaces. This product is hop 0.
 

@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.35.0] - 2026-10-14
+
+### Added
+
+- **CLI coding homes.** Fedora / Red Hat, Debian / Ubuntu, macOS, Termux, and Windows Git Bash each have a shell requirement. `sshd_fix_os_class` stays `alpine`, `termux`, or `posix`. No `dnf`, `apt`, or `brew` wrap. Law: `requirement-shell-fedora-redhat-cli-coding` **1.0.0** · `requirement-shell-debian-cli-coding` **1.0.0** · `requirement-shell-macos-cli-coding` **1.0.0** · `requirement-shell-termux-cli-coding` **1.0.0** · `requirement-shell-windows-git-bash-cli-coding` **1.0.0** · `requirement-class-software-dev` **1.0.6** · `requirement-shell-script-coding` **1.1.4** · `requirement-shell-termux-ish` **1.2.1**.
+
+### Fixed
+
+- **Missing sshd next step.** POSIX Linux names `dnf` (Fedora and RHEL) and `apt` (Debian and Ubuntu) in one sentence and says this program does not run that command. Git Bash, Windows cmd, and macOS each get their own next step. Termux still points at `sshd-cli install`. Test **TP-SSHD-17**. Law: `requirement-shell-exit-condition` **1.0.1**. Samples follow `VERSION` **1.35.0** (`requirement-shell-cli-language` **1.7.1**, `requirement-shell-cli-interface` **1.14.14**).
+
+## [1.34.0] - 2026-10-14
+
+### Changed
+
+- **Front board numbers.** **5** sudoers (children **51–55**). On Termux / Git Bash / Windows cmd that row stays off the list and the menu still prints `[INFO] sudoers not available for termux` (or `gitbash` / `windows-cmd`) before the numbers. **6** self-management (children **61–67**). **7** language. Language rows **70–89** stay the block (not more than 20). Assigned **71** English (`en`) through **83** Greek (`el`), same order as 1.32.0. **70** and **84–89** stay unprinted. Front **8** is not a row. Tests **TP-CLI-14** · **TP-CLI-21** · **TP-CLI-22** · **TP-CLI-24** · **TP-SSHD-04** · **TP-CFG-04** · **TP-CFG-05** · **TP-CFG-09** · **TP-CFG-17**. Law: `requirement-shell-cli-default-interaction` **1.18.0** · `requirement-shell-cli-language` **1.7.0** · `requirement-shell-cli-interface` **1.14.13** · `requirement-domain-sshd` **1.27.4** · `requirement-shell-self-management` **1.1.3** · `requirement-shell-cli-self-install` **1.1.2** · `requirement-shell-config-backup` **1.0.3** · `requirement-sshd-config-backup` **1.1.3**.
+
+## [1.33.0] - 2026-10-10
+
+### Changed
+
+- **Front board hide line.** On Termux / Git Bash / Windows cmd, row **7** sudoers stays off the numbered list. Before the numbers the menu prints `[INFO] sudoers not available for termux` (or `gitbash` / `windows-cmd`). The same sentence follows the saved menu language. POSIX Linux still numbers **7**. Tests **TP-SSHD-04** · **TP-CFG-04** · **TP-CFG-05** · **TP-CFG-09**. Law: `requirement-shell-cli-default-interaction` **1.17.0** · `requirement-shell-cli-language` **1.6.0** · `requirement-shell-cli-interface` **1.14.11** · `requirement-domain-sshd` **1.27.3**.
+
 ## [1.32.0] - 2026-10-02
 
 ### Changed

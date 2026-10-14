@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-shell-output-requirements.md  
-**Status**: Active (Version 1.0.1)  
+**Status**: Active (Version 1.0.2)  
 **Philosophy**: CIAO / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered)
 
 ## 1. Purpose
@@ -94,7 +94,7 @@ Align with SSOT-of-stdout and SSOT-of-stderr terms:
 
 **Rules:**
 
-1. **Errors never as the primary success payload on stdout** in a way that corrupts JSON pipes — fatal paths use `out_die` / `out_json_error`.  
+1. **Errors never as the primary success payload on stdout** in a way that corrupts JSON pipes — fatal paths use `out_die` / `out_json_error`. Which conditions end the process, and the message text, live in `requirement-shell-exit-condition`. This file does not copy that table.  
 2. **JSON purity:** In JSON mode, stdout is reserved for the structured result; no colors, banners, or progress mixed in.  
 3. **Capture pattern for agents/CI:**  
    `sshd-cli --json <cmd> 2>err.log` → stdout = JSON; stderr = diagnostics as mode allows.  
@@ -275,11 +275,12 @@ Output-related work for sshd-cli is **not done** if any of the following fail:
 | `docs/requirements/requirement-shell-cli-interface.md` | Flag wiring and command surface |
 | `docs/requirements/requirement-shell-modular-function-design.md` | `out_*` prefix ownership |
 | `docs/requirements/requirement-shell-interactive-vs-noninteractive.md` | Mode interaction with quiet/json |
+| `docs/requirements/requirement-shell-exit-condition.md` | When the process ends, and the message |
 | `docs/requirements/index.md` | Registry SSOT |
 | `./sshd-cli` | Implementation under test |
 
 ---
 
-**Last Updated**: 2026-09-05 (§1.1 Human-facing; printf exception classes §2.1.1; `path_ensure_profile`)  
+**Last Updated**: 2026-10-10 (1.0.2 exit catalog points at `requirement-shell-exit-condition`. Prior: 2026-09-05 §1.1 Human-facing; printf exception classes §2.1.1; `path_ensure_profile`)  
 **Owner**: sshd-cli project maintainers  
 **Alignment**: Registry `docs/requirements/index.md`; CIAO Principles 1, 2, 3, 5, 14, 4, 20 (v2.10.2) (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

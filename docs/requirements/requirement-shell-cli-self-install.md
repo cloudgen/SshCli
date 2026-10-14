@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-shell-cli-self-install.md  
-**Status**: Active (Version 1.1.1)  
+**Status**: Active (Version 1.1.2)  
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
 
 ## 1. Purpose
@@ -86,7 +86,7 @@ Force off → `out_success` already installed; exit 0; no re-copy; no download; 
 | **Download peer** | `inst_perform_install_download_*` + `inst_perform_install_atomic_install` then dest-mode chmod |
 | **PATH** | `path_add_shell` on this path (CLI on PATH). Package + start stay on `install`. |
 | **Dispatcher** | `app_main` non-interactive zero-cli-verb → `inst_self_install`; command `self-install` same |
-| **TTY menu** | Self-management **87** `self-install` |
+| **TTY menu** | Self-management **67** `self-install` |
 | **Global bin** | `/usr/local/bin` or `${PREFIX}/bin` on Termux |
 | **Local bin** | `${HOME}/.local/bin` |
 | **Tests** | `tests/test_cli.sh` **TP-SI-01** .. **TP-SI-06** · **TP-CLI-23** |
@@ -183,6 +183,6 @@ When Termux, Git Bash, Windows cmd, or the same class is detected: Type 1/2 unus
 | `docs/requirements/requirement-shell-termux-ish.md` | `pkg` on `install` only |
 | `./sshd-cli` | Implementation |
 
-**Last Updated**: 2026-09-28 (1.1.1 interactive empty command calls `app_cmd_menu`)  
+**Last Updated**: 2026-10-14 (1.1.2 self-management row **67** `self-install`. 1.1.1 interactive empty command calls `app_cmd_menu`)  
 **Owner**: sshd-cli project maintainers  
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

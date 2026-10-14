@@ -3,9 +3,9 @@
 Maps **TP-*** coverage to `tests/`.  
 **Suite entry:** `./tests/run.sh`  
 **Ship unit:** `src/sshd-cli`  
-**Product VERSION:** 1.32.0  
-**Last plan update:** 2026-10-02  
-**Last suite run:** PASS=1091 FAIL=0 SKIP=0 (`./tests/run.sh`, 2026-10-02, product 1.32.0). **TP-CLI-14** and **TP-CLI-24** passed: front **5** language, block **50–69** (assigned **51–63**); **50**, **64**, and **69** do not write the file; front **6** warns and does not open the language board. Prior run: PASS=1065 FAIL=0 SKIP=0 (`./tests/run.sh`, 2026-10-02, product 1.31.0), assigned **51–58**. Earlier: PASS=844 FAIL=22 SKIP=0 (`./tests/run.sh`, 2026-09-28, product 1.28.0). Those 22 were TP-DL-* `tar xzf` cases. The 1.31.0 run’s TP-DL-* cases passed.
+**Product VERSION:** 1.35.0  
+**Last plan update:** 2026-10-14  
+**Last suite run:** PASS=1107 FAIL=0 SKIP=0 (`./tests/run.sh`, 2026-10-14, product 1.35.0). **TP-SSHD-17** passed: a missing sshd names `dnf` on Fedora and RHEL and `apt` on Debian and Ubuntu, and says this program does not run that command. Git Bash, Windows cmd, and macOS each have their own next step. Prior run: PASS=1100 FAIL=0 SKIP=0 (`./tests/run.sh`, 2026-10-14, product 1.34.0). **TP-CLI-14**, **TP-CLI-21**, **TP-CLI-24**, **TP-SSHD-04**, and **TP-CFG-04** / **05** / **09** / **17** passed: front **5** sudoers (**51–55**), **6** self-management (TTY **62** runs about), **7** language block **70–89** (assigned **71–83**); front **8** warns; Termux / Git Bash / Windows cmd omit row **5**. Prior run: PASS=1099 FAIL=0 SKIP=0 (`./tests/run.sh`, 2026-10-10, product 1.33.0). **TP-SSHD-04**, **TP-CFG-04**, **TP-CFG-05**, and **TP-CFG-09** passed: Termux / Git Bash / Windows cmd print `sudoers not available for termux` / `gitbash` / `windows-cmd` before the front numbers and omit row **7**. Prior run: PASS=1091 FAIL=0 SKIP=0 (`./tests/run.sh`, 2026-10-02, product 1.32.0). **TP-CLI-14** and **TP-CLI-24** passed: front **5** language, block **50–69** (assigned **51–63**); **50**, **64**, and **69** do not write the file; front **6** warns and does not open the language board. Earlier: PASS=1065 FAIL=0 SKIP=0 (`./tests/run.sh`, 2026-10-02, product 1.31.0), assigned **51–58**. Earlier: PASS=844 FAIL=22 SKIP=0 (`./tests/run.sh`, 2026-09-28, product 1.28.0). Those 22 were TP-DL-* `tar xzf` cases. The 1.31.0 run’s TP-DL-* cases passed.
 
 Status: **have** = automated today · **todo** = needed · **optional** · **n/a** · **skip** (environment)
 
@@ -82,12 +82,12 @@ This product **is** online-installable (`SCRIPT_URL`, `self-update`, `version-ch
 | TP-CFG-14 | preferred-remote saved mode 600 | test_config_backup | requirement-shell-config-backup | **have** |
 | TP-CFG-15 | TTY empty Enter uses stored default | test_config_backup | requirement-shell-config-backup | **have** |
 | TP-CFG-16 | `--json` type/host fields | test_config_backup | requirement-shell-config-backup | **have** |
-| TP-CFG-17 | TTY front **7** sudoers submenu unknown choice warns and redisplays; verbs **71–75** | test_config_backup | requirement-domain-sshd · requirement-shell-interactive-vs-noninteractive | **have** |
+| TP-CFG-17 | TTY front **5** sudoers submenu unknown choice warns and redisplays; verbs **51–55** | test_config_backup | requirement-domain-sshd · requirement-shell-interactive-vs-noninteractive | **have** |
 | TP-CLI-13 | backup/restore/sudoers verbs unknown | test_cli | requirement-shell-cli-interface | **have** |
-| TP-CLI-14 | empty argv interactive → front 1/2/7/8/9 (sudoers **7**; no install); client 11 dns / 12 ssh / 13 download / 14 upload; no client **17** | test_cli | requirement-shell-cli-default-interaction · requirement-shell-cli-zero-arguments · requirement-domain-sshd | **have** |
+| TP-CLI-14 | empty argv interactive → front 1/2/5/6/7/9 (sudoers **5**, self-management **6**, language **7**; no install); client 11 dns / 12 ssh / 13 download / 14 upload; no client **17** | test_cli | requirement-shell-cli-default-interaction · requirement-shell-cli-zero-arguments · requirement-domain-sshd | **have** |
 | TP-CLI-23 | switch-only: TTY `--debug` / `--force` menu and no install; `--quiet` / `--json` / non-TTY `--debug` self-install; TTY `--json` places the CLI; `--debug status` stays status | test_cli | requirement-shell-cli-zero-arguments · requirement-shell-cli-default-interaction · requirement-shell-cli-self-install | **have** |
-| TP-CLI-24 | Menu **5** language, block **50–69** (at most 20; **50** and **59–69** unprinted): **51** English, **52** Traditional Chinese, **53** Spanish, **54** French, **55** German, **56** Simplified Chinese, **57** Japanese, **58** Korean, file `language` mode 600, unrecognized line stays English, `SSHD_CLI_LANG` overrides the file, Japanese and Korean `help` and `about` | test_cli | requirement-shell-cli-language · requirement-shell-cli-default-interaction · requirement-shell-cli-storage | **have** |
-| TP-CLI-21 | TTY **82** / typed `version` run about; argv `version` stays thin JSON type | test_cli | requirement-shell-cli-default-interaction · requirement-shell-cli-interface · **INC-20260914-001** | **have** |
+| TP-CLI-24 | Menu **7** language, block **70–89** (at most 20; **70** and **84–89** unprinted): **71** English, **72** Simplified Chinese, **73** Traditional Chinese, **74** Spanish, **75** Arabic, **76** French, **77** Portuguese, **78** Russian, **79** German, **80** Japanese, **81** Korean, **82** Dutch, **83** Greek, file `language` mode 600, unrecognized line stays English, `SSHD_CLI_LANG` overrides the file, Japanese and Korean `help` and `about` | test_cli | requirement-shell-cli-language · requirement-shell-cli-default-interaction · requirement-shell-cli-storage | **have** |
+| TP-CLI-21 | TTY **62** / typed `version` run about; argv `version` stays thin JSON type | test_cli | requirement-shell-cli-default-interaction · requirement-shell-cli-interface · **INC-20260914-001** | **have** |
 | TP-CLI-22 | Finished TTY leaf redisplays the **front board** (not the submenu); typed leaf on front stays on front | test_cli | requirement-shell-cli-default-interaction | **have** |
 | TP-CLI-15 | status Connect: live ssh -p user@ipv4; no `<this-host>` | test_cli | requirement-domain-sshd | **have** |
 
@@ -294,6 +294,15 @@ This product **is** online-installable (`SCRIPT_URL`, `self-update`, `version-ch
 | TP-ID | Intent | Suite | Primary requirement(s) | Status |
 |-------|--------|-------|------------------------|--------|
 | TP-CSUM-01 | First install prints companion **link**; PASS or missing-sidecar warn; no mismatch abort | test_local_lifecycle | requirement-shell-automatic-checksum | **have** |
+
+### TP-EXIT (process exit catalog)
+
+| TP-ID | Intent | Suite | Primary requirement(s) | Status |
+|-------|--------|-------|------------------------|--------|
+| TP-EXIT-01 | Unknown token is status 1, `[ERROR]`, and names `help` (EX-DIE-196) | `tests/test_cli.sh` | requirement-shell-exit-condition | **todo** |
+| TP-EXIT-02 | `--json` unknown token is status 1, stderr JSON `out_error`, code `unknown`, no `[ERROR]` | `tests/test_cli.sh` | requirement-shell-exit-condition | **todo** |
+| TP-EXIT-03 | Front menu `9` exits 0. A bad menu number warns and does not exit | `tests/test_cli.sh` | requirement-shell-exit-condition | **todo** |
+| TP-EXIT-04 | `--purpose` with no text is status 1 (EX-DIE-195) | `tests/test_cli.sh` | requirement-shell-exit-condition | **todo** |
 
 ---
 
