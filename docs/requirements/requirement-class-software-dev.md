@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-class-software-dev.md  
-**Status**: Active (Version 1.0.6 – family CLI coding owned by the five shell coding homes; exit catalog owned by requirement-shell-exit-condition)  
+**Status**: Active (Version 1.0.7 – family CLI coding owned by the nine shell coding homes; the Git Bash home owns the MSYS gzip-stdin ban; exit catalog owned by requirement-shell-exit-condition)  
 **Area**: class  
 **Key**: `requirement-class-software-dev`  
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -105,7 +105,7 @@ This file is **class law + residual SSOT**, not a second copy of Type 0 lifecycl
 | **Lockfile policy** | not used |
 | **Test runner** | `tests/run.sh` + `tests/test_cli.sh` + `tests/test_local_lifecycle.sh` (POSIX shell) |
 | **Linter/formatter** | none as project law (shellcheck optional for maintainers, not required gate) |
-| **Primary runtime / OS family** | POSIX Linux **and Termux** (Android userspace; `PREFIX` bin/etc). Git Bash and Windows cmd are the same **command line for normal user only** class as Termux (Type 1/2 unused). Also compatible UNIX where `/bin/sh` + coreutils/`sha256sum`/`mktemp` exist. Family coding: `requirement-shell-fedora-redhat-cli-coding`, `requirement-shell-debian-cli-coding`, `requirement-shell-macos-cli-coding`, `requirement-shell-termux-cli-coding`, `requirement-shell-windows-git-bash-cli-coding`. `sshd_fix_os_class` stays `alpine` \| `termux` \| `posix` |
+| **Primary runtime / OS family** | POSIX Linux **and Termux** (Android userspace; `PREFIX` bin/etc). Git Bash and Windows cmd are the same **command line for normal user only** class as Termux (Type 1/2 unused). Also compatible UNIX where `/bin/sh` + coreutils/`sha256sum`/`mktemp` exist. Family coding: `requirement-shell-fedora-redhat-cli-coding`, `requirement-shell-debian-cli-coding`, `requirement-shell-macos-cli-coding`, `requirement-shell-termux-cli-coding`, `requirement-shell-windows-git-bash-cli-coding`, `requirement-shell-windows-cmd-cli-coding`, `requirement-shell-alpine-cli-coding`, `requirement-shell-busybox-cli-coding`, `requirement-shell-other-linux-cli-coding`. The Git Bash home owns the MSYS gzip-stdin ban. This file does not copy that ban. `sshd_fix_os_class` stays `alpine` \| `termux` \| `posix` |
 | **Architectures supported** | any arch with a POSIX sh and the external tools the script invokes (no arch-specific binary) |
 | **Git surface** | used for product publish (`github.com/cloudgen/sshd-cli`) |
 | **Ship unit / install** | yes — repo root `./sshd-cli` + companion `sshd-cli.sha256`; Type 0 online install (peer shell REQs) |
@@ -137,7 +137,11 @@ This file is **class law + residual SSOT**, not a second copy of Type 0 lifecycl
 | Debian CLI coding | `requirement-shell-debian-cli-coding` | One family; no `apt` wrap; no hardcoded Ubuntu |
 | macOS CLI coding | `requirement-shell-macos-cli-coding` | Darwin cache and digest fence |
 | Termux CLI coding | `requirement-shell-termux-cli-coding` | Detect and coding fence; `pkg` stays on termux-ish |
-| Windows Git Bash CLI coding | `requirement-shell-windows-git-bash-cli-coding` | Git Bash fence; Windows cmd stays a different detect |
+| Windows Git Bash CLI coding | `requirement-shell-windows-git-bash-cli-coding` | Git Bash fence; owns the MSYS gzip-stdin ban; Windows cmd stays a different detect |
+| Windows cmd CLI coding | `requirement-shell-windows-cmd-cli-coding` | Keeps the streamed pipe; `Windows_NT` is not the MSYS ban |
+| Alpine CLI coding | `requirement-shell-alpine-cli-coding` | Keeps the streamed pipe; GSSAPI stays on the domain file |
+| BusyBox CLI coding | `requirement-shell-busybox-cli-coding` | Keeps the streamed pipe; applet calls stay `busybox APPLET` |
+| Other Linux CLI coding | `requirement-shell-other-linux-cli-coding` | POSIX Linux outside the named families; keeps the streamed pipe |
 | Actor / role / subject / approver | *none* (considered — **no dest approver**) | No dest review machine |
 | Dest fence conditions | *none* (considered — **no dest fence conditions**) | No dest inbound queue |
 | Login-review hook | *none* (considered — **no login-hook**) | Type 0 sshd helper; no dest review scrap |
@@ -232,7 +236,11 @@ Helpers (this product): `sshd_is_termux`, `sshd_is_git_bash`, `sshd_is_windows_c
 | `requirement-shell-debian-cli-coding` | Debian / Ubuntu CLI coding |
 | `requirement-shell-macos-cli-coding` | macOS CLI coding |
 | `requirement-shell-termux-cli-coding` | Termux CLI coding |
-| `requirement-shell-windows-git-bash-cli-coding` | Windows Git Bash CLI coding |
+| `requirement-shell-windows-git-bash-cli-coding` | Windows Git Bash CLI coding; owns the MSYS gzip-stdin ban |
+| `requirement-shell-windows-cmd-cli-coding` | Windows cmd CLI coding |
+| `requirement-shell-alpine-cli-coding` | Alpine CLI coding |
+| `requirement-shell-busybox-cli-coding` | BusyBox CLI coding |
+| `requirement-shell-other-linux-cli-coding` | Other POSIX Linux CLI coding |
 | `requirement-domain-sshd` | OpenSSH sshd domain SSOT |
 | `requirement-shell-sudoer` | Sudoer features SSOT (JSON, print/generate/submit, `util_sudo`) |
 | `requirement-shell-config-backup` | `backup-config` / `sync-config` (depends on sudoer) |
@@ -251,9 +259,10 @@ Helpers (this product): `sshd_is_termux`, `sshd_is_git_bash`, `sshd_is_windows_c
 | 2026-07-19 | Active | Specialized class law for sshd-cli (review fix F1) |
 | 2026-10-10 | Active 1.0.5 | Exit catalog points at `requirement-shell-exit-condition`. This file does not copy the tables |
 | 2026-10-14 | Active 1.0.6 | Family CLI coding points at the five shell coding homes. This file does not copy those fences |
+| 2026-10-14 | Active 1.0.7 | Points at nine shell coding homes. The Git Bash home owns the MSYS gzip-stdin ban. This file does not copy that ban |
 
 ---
 
-**Last Updated**: 2026-10-14 (1.0.6 family CLI coding pointer. 2026-10-10 (1.0.5 exit catalog pointer. Prior: 2026-09-09 residual path-and-shell-support))  
+**Last Updated**: 2026-10-14 (1.0.7 nine family coding homes; Git Bash owns the stdin ban. 1.0.6 family CLI coding pointer. 2026-10-10 (1.0.5 exit catalog pointer. Prior: 2026-09-09 residual path-and-shell-support))  
 **Owner**: sshd-cli project maintainers  
 **Alignment**: Registry `docs/requirements/index.md`; CIAO Principles 1, 2, 4, 5, 20, 21 (v2.10.2) (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

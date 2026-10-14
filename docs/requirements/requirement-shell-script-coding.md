@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-shell-script-coding.md  
-**Status**: Active (Version 1.1.4)  
+**Status**: Active (Version 1.1.5)  
 **Area**: shell  
 **Key**: `requirement-shell-script-coding`  
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -49,7 +49,7 @@ This is the **coding-style related requirement** for sshd-cli (POSIX `/bin/sh`).
 10. In-tool sudo wrappers: **`util_sudo`** for `backup-config` only. SSOT: `requirement-shell-sudoer` (this file **points**; wrap slice `requirement-shell-sudo-command` also points).  
 11. **MUST NOT** `out_die` because `mkdir` of one cache/storage leaf failed while later roots remain untried. Chain SSOT: `requirement-shell-cli-storage`.  
 12. In-place `sed` **MUST** use `sed -i.bak` and then remove the `.bak`. Bare `sed -i` fails on macOS BSD `sed`. Family note: `requirement-shell-macos-cli-coding`.  
-13. Family coding **MUST** stay on the five homes: `requirement-shell-fedora-redhat-cli-coding`, `requirement-shell-debian-cli-coding`, `requirement-shell-macos-cli-coding`, `requirement-shell-termux-cli-coding`, `requirement-shell-windows-git-bash-cli-coding`. This file **MUST NOT** copy those fences. `sshd_fix_os_class` stays `alpine` | `termux` | `posix` (`requirement-domain-sshd`).
+13. Family coding **MUST** stay on the nine homes: `requirement-shell-fedora-redhat-cli-coding`, `requirement-shell-debian-cli-coding`, `requirement-shell-macos-cli-coding`, `requirement-shell-termux-cli-coding`, `requirement-shell-windows-git-bash-cli-coding`, `requirement-shell-windows-cmd-cli-coding`, `requirement-shell-alpine-cli-coding`, `requirement-shell-busybox-cli-coding`, `requirement-shell-other-linux-cli-coding`. The Git Bash home owns the MSYS gzip-stdin ban. This file **MUST NOT** copy those fences. `sshd_fix_os_class` stays `alpine` | `termux` | `posix` (`requirement-domain-sshd`).
 
 ### 2.1 Implementation Notes (this project)
 
@@ -99,7 +99,7 @@ Helpers (this product): `sshd_is_termux`, `sshd_is_git_bash`, `sshd_is_windows_c
 4. Duplicate the full output or install tables here.  
 5. Strip the **Under command line for normal user only** section, or add in-tool `sudo` on that class.  
 6. Abort the CLI because `mkdir` of one cache leaf failed while later temp roots are untried (storage chain: `requirement-shell-cli-storage`).  
-7. Paste the Fedora / Debian / macOS / Termux / Git Bash family fences into this file, or add `sshd_is_fedora` / `sshd_is_debian` here.
+7. Paste the Fedora / Debian / macOS / Termux / Git Bash / Windows cmd / Alpine / BusyBox / other-Linux family fences into this file, or add `sshd_is_fedora` / `sshd_is_debian` here.
 
 ## 5. Related artifacts (versioned surface only)
 
@@ -115,9 +115,13 @@ Helpers (this product): `sshd_is_termux`, `sshd_is_git_bash`, `sshd_is_windows_c
 | `docs/requirements/requirement-shell-debian-cli-coding.md` | Debian / Ubuntu family fence |
 | `docs/requirements/requirement-shell-macos-cli-coding.md` | Darwin family fence |
 | `docs/requirements/requirement-shell-termux-cli-coding.md` | Termux coding fence (`pkg` stays on termux-ish) |
-| `docs/requirements/requirement-shell-windows-git-bash-cli-coding.md` | Git Bash coding fence |
+| `docs/requirements/requirement-shell-windows-git-bash-cli-coding.md` | Git Bash coding fence; owns the MSYS gzip-stdin ban |
+| `docs/requirements/requirement-shell-windows-cmd-cli-coding.md` | Windows cmd coding fence |
+| `docs/requirements/requirement-shell-alpine-cli-coding.md` | Alpine coding fence |
+| `docs/requirements/requirement-shell-busybox-cli-coding.md` | BusyBox coding fence |
+| `docs/requirements/requirement-shell-other-linux-cli-coding.md` | Other POSIX Linux coding fence |
 | `./sshd-cli` | Implementation |
 
-**Last Updated**: 2026-10-14 (1.1.4 family coding homes own Fedora/Red Hat, Debian, macOS, Termux, and Windows Git Bash. In-place `sed` is `sed -i.bak`. 2026-09-28 (1.1.3 menu `read` is `app_cmd_menu` and the child boards. 1.1.2 quoted those bodies in the peer requirements))  
+**Last Updated**: 2026-10-14 (1.1.5 nine family coding homes. The Git Bash home owns the MSYS gzip-stdin ban. 1.1.4 family coding homes own Fedora/Red Hat, Debian, macOS, Termux, and Windows Git Bash. In-place `sed` is `sed -i.bak`. 2026-09-28 (1.1.3 menu `read` is `app_cmd_menu` and the child boards. 1.1.2 quoted those bodies in the peer requirements))  
 **Owner**: Cloudgen Wong  
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

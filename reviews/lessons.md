@@ -27,6 +27,7 @@ Durable failure modes. **Always re-check on product review.**
 | L-DL-01 | TTY `download` skips the `ssh` user prompt, so BatchMode ssh uses this login / Host User with no override | Same user walk as `ssh`; `-l` when non-empty; **INC-20260912-001**; TP-DL-10..13 | open watch |
 | L-DL-02 | `download` refuses `~/folder` as if `~` were a metacharacter; single-quoting `~/…` blocks remote tilde | Allow `~/folder`; remote `"$HOME"/'folder'`; refuse `~` alone and `~user/…`; **INC-20260912-002**; TP-DL-14..16 | open watch |
 | L-TTY-THIN-01 | TTY numbered row reprints the board header (thin sibling of a richer diagnostic on the same board) | TTY **62** / typed `version` run `about`; argv `version` stays thin; do not number `help` / `menu` / `where-is-me` / `config` beside `status`; **INC-20260914-001**; **TP-CLI-21** | open watch |
+| L-UL-01 | MSYS / Git Bash gzip stdin short-read on folder upload or download (`invalid compressed data--format violated`, remote Unexpected EOF, local short write / status 141) | `requirement-shell-windows-git-bash-cli-coding` **1.1.0**: finish the archive, copy the file, extract the file, remove the archive. Do not treat fake-ssh **TP-UL-*** as proof. A short sleep is not a repair. **INC-20261014-001**. **TP-OS-GB-01..04** are todo. The ship unit still pipes | open watch |
 
 **Related-product only (do not re-apply as this origin’s law):** L-DEPOSIT-01, L-SUDOERS-01..05, L-OVERWRITE-01 stay on folder-backup. Type O empty-argv / online-channel lessons stay on products that own those surfaces. This product is hop 0.
 

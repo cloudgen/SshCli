@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-shell-termux-cli-coding.md  
-**Status**: Active (Version 1.0.0)  
+**Status**: Active (Version 1.0.1)  
 **Area**: shell  
 **Key**: `requirement-shell-termux-cli-coding`  
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -46,7 +46,8 @@ This is the **Termux CLI coding** home for sshd-cli. It says how to write `./ssh
 7. Binaries this login installs live under `$PREFIX` (typical `PREFIX/bin`, `PREFIX/etc`). **MUST NOT** assume `/usr/sbin/sshd` or `/lib/systemd` on this detect.  
 8. Menu coding **MUST** follow the live boards: front **5** sudoers hidden with `[INFO] sudoers not available for termux` before the numbers; client **18** `sync-from-remote` instead of **15** / **16**; server **22–24** shown for this login. Numbers and sentences stay owned by `requirement-shell-cli-default-interaction` and `requirement-domain-sshd`.  
 9. The script **MUST** stay POSIX `/bin/sh`. **MUST NOT** require bash arrays or GNU `grep -P`. In-place `sed` **MUST** use `sed -i.bak`.  
-10. Portable style stays on `requirement-shell-script-coding`.
+10. Portable style stays on `requirement-shell-script-coding`.  
+11. `download` and `upload` **MUST** keep the streamed pipe. They **MUST NOT** use the MSYS2 finished-file transfer. That ban is `requirement-shell-windows-git-bash-cli-coding`.
 
 ### 2.1 Implementation Notes (this project)
 
@@ -138,6 +139,6 @@ This file adds no new test.
 **Matrix:** `reviews/requirement-test-matrix.md`  
 **Map:** `reviews/test-plan.md`
 
-**Last Updated**: 2026-10-14 (1.0.0 family coding home)  
+**Last Updated**: 2026-10-14 (1.0.1 streamed pipe stays. 1.0.0 family coding home)  
 **Owner**: Cloudgen Wong  
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

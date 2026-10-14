@@ -29,12 +29,16 @@
 | requirement-three-layer-privilege-model | privilege | TP-CFG-06, TP-CFG-07 | Points sudoer verbs at shell-sudoer |
 | requirement-shell-sudo-command | shell | TP-CFG-01, TP-CFG-06 | Points wrap at shell-sudoer |
 | requirement-shell-termux-ish | shell | TP-LC-15, TP-LC-16, TP-LC-18, TP-LC-19, **TP-TX-08..16** | not Termux: `pkg` / `termux-wake-lock` not invoked; Termux mock: `pkg install -y openssh termux-auth`; auto-acquire + `wake-lock` verb; Git Bash / Windows cmd skip |
-| requirement-shell-script-coding | shell | TP-CLI-01, TP-CLI-11, TP-CLI-20 | `sh -n`; `set -u` with HOME unset; mkdir fail-soft (no mid-chain die); family fences are the five CLI coding homes |
+| requirement-shell-script-coding | shell | TP-CLI-01, TP-CLI-11, TP-CLI-20 | `sh -n`; `set -u` with HOME unset; mkdir fail-soft (no mid-chain die); family fences are the nine CLI coding homes |
 | requirement-shell-fedora-redhat-cli-coding | shell | TP-SSHD-03, TP-SSHD-09..14, TP-SSHD-10, **TP-SSHD-17** | `posix` class; no `dnf`/`yum` (absent by design); unit probe `ssh.service` or `sshd.service`; non-root hides 22–24; missing-sshd hint names `dnf` and `apt`. No Fedora-only suite host |
 | requirement-shell-debian-cli-coding | shell | TP-SSHD-03, TP-SSHD-09..14, TP-SSHD-10, **TP-SSHD-17** | `posix` class; no `apt` wrap; missing-sshd hint is not Debian-only. No Debian-only suite host |
 | requirement-shell-macos-cli-coding | shell | TP-CLI-12, TP-CLI-20, **TP-SSHD-17** | Darwin cache `/tmp/cache` → `Library/Caches` → `~/cache`; digest stays `util_sha256_file`; Mac missing-sshd hint does not name `brew` |
 | requirement-shell-termux-cli-coding | shell | TP-SSHD-04, TP-SSHD-13, TP-CFG-04 | `sshd_is_termux`; sudoers hide; start does not call `systemctl`. `pkg` and wake lock stay on termux-ish |
-| requirement-shell-windows-git-bash-cli-coding | shell | TP-CFG-05, TP-CLI-12, TP-LC-18, **TP-SSHD-17** | `sshd_is_git_bash`; token `gitbash`; cache tmp → AppData; `install` does not call `pkg`; missing-sshd hint does not name `apt`. Windows cmd is TP-LC-19, not this row |
+| requirement-shell-windows-git-bash-cli-coding | shell | TP-CFG-05, TP-CLI-12, TP-LC-18, **TP-SSHD-17**, **TP-OS-GB-01..04** (todo) | `sshd_is_git_bash`; token `gitbash`; cache tmp → AppData; `install` does not call `pkg`; missing-sshd hint does not name `apt`. Owns the MSYS gzip-stdin ban. Ship unit still pipes. Windows cmd is TP-LC-19 and TP-OS-CMD-01, not this row |
+| requirement-shell-windows-cmd-cli-coding | shell | TP-CFG-09, TP-LC-19, **TP-OS-CMD-01** (todo) | Detect after Git Bash, Cygwin, and WSL. Keeps the streamed pipe. `Windows_NT` is not the MSYS ban |
+| requirement-shell-alpine-cli-coding | shell | TP-FIX-*, **TP-OS-ALP-01** (todo) | `sshd_fix_os_class` alpine. Keeps the streamed pipe. No `apk` wrap. GSSAPI stays on the domain file |
+| requirement-shell-busybox-cli-coding | shell | **TP-OS-BB-01** (todo) | `busybox APPLET`. Keeps the streamed pipe. Does not rename filename-selected applets |
+| requirement-shell-other-linux-cli-coding | shell | **TP-OS-OTH-01** (todo) | POSIX Linux outside Debian, Fedora/RHEL, Alpine, and Termux. Keeps the streamed pipe. No invented package tool |
 
 **Absent by design (no TP Core):** folder-archive backup/restore, sudoers-file emit, systemd unit files.
 

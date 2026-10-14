@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-shell-windows-git-bash-cli-coding.md  
-**Status**: Active (Version 1.0.0)  
+**Status**: Active (Version 1.1.0)  
 **Area**: shell  
 **Key**: `requirement-shell-windows-git-bash-cli-coding`  
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -12,7 +12,7 @@ Windows cmd is a different detect (`sshd_is_windows_cmd`). This file does not ow
 
 ### 1.1 Human-facing
 
-**In one sentence:** Under Git Bash, the CLI hides sudoers, does not run `pkg` or `systemctl`, and stores cache under `/tmp/cache` then AppData.
+**In one sentence:** Under Git Bash, the CLI hides sudoers, does not run `pkg` or `systemctl`, stores cache under `/tmp/cache` then AppData, and must not read a `download` or `upload` gzip on stdin.
 
 | Box | Meaning | Example |
 |-----|---------|---------|
@@ -49,7 +49,14 @@ Windows cmd is a different detect (`sshd_is_windows_cmd`). This file does not ow
 8. Menu coding **MUST** follow the live boards: front **5** hidden with `[INFO] sudoers not available for gitbash` before the numbers; client backup/sync hidden with `backup-config and sync-config not available for gitbash`; client **18** `sync-from-remote`; server **22–24** shown for this login. Sentence text and numbers stay on `requirement-shell-cli-default-interaction` and `requirement-domain-sshd`.  
 9. The script **MUST** stay POSIX `/bin/sh`. **MUST NOT** require Bash `[[ ]]` as the only form, bash arrays, or GNU `grep -P`. In-place `sed` **MUST** use `sed -i.bak`.  
 10. Portable style stays on `requirement-shell-script-coding`.  
-11. When sshd is missing, `sshd_openssh_server_hint` **MUST** say Git Bash does not provide sshd. **MUST NOT** tell that shell to run `apt` or `dnf`. Windows cmd is the next branch in that same helper (`Windows cmd does not provide sshd`). This file does not own the cmd detect.
+11. When sshd is missing, `sshd_openssh_server_hint` **MUST** say Git Bash does not provide sshd. **MUST NOT** tell that shell to run `apt` or `dnf`. Windows cmd is the next branch in that same helper (`Windows cmd does not provide sshd`). This file does not own the cmd detect.  
+12. This file is the only owner of the MSYS2 / Git Bash gzip-stdin ban. Peer OS files **MUST** keep the streamed pipe and **MUST NOT** copy this ban onto their readers.  
+13. The local detect is `sshd_is_git_bash`. The remote reader is MSYS2 or Git Bash when `uname -s` is `MINGW*` or `MSYS*`, or `OSTYPE` is `msys*` or `mingw*`. `Windows_NT` alone is not this ban.  
+14. When the process that **reads** the gzip is MSYS2 or Git Bash, `download` and `upload` **MUST NOT** pipe the archive into `tar xzf -` or into `gzip` on stdin. A short `sleep` before `tar` does not meet this rule.  
+15. The complying transfer is four steps. The writer finishes `tar czf` to a new file and `gzip -t` on that file succeeds. The file crosses with `scp` or `sftp`, so an MSYS process is not the stdin reader. The reader runs `tar xzf <file> -C <dest>` with the archive named as a file. After a successful extract, that archive is removed. The product result is the folder.  
+16. The archive name **MUST** be unique in the destination directory. Upload's extract directory stays the remote ssh user's `"$HOME"`, expanded on that host. Download's extract directory stays this login's current directory. `cat archive | ssh 'cat > archive.tar.gz'` is still an MSYS stdin read when the remote shell is Git Bash. It does not meet rule 15.  
+17. On failure after gzip or tar has already rejected or truncated the stream, the operator line **MUST** name gzip or tar. It **MUST NOT** say only that `ssh <alias>` failed.  
+18. **1.35.0 still pipes on every Host.** **TP-UL-01** .. **TP-UL-18** store stdin with a fake `ssh`. They do not run MSYS `tar`. **TP-OS-GB-01** .. **TP-OS-GB-04** are todo.
 
 ### 2.1 Implementation Notes (this project)
 
@@ -63,6 +70,7 @@ Windows cmd is a different detect (`sshd_is_windows_cmd`). This file does not ow
 | Package / wake lock | not invoked |
 | Service manager | not used |
 | Windows cmd | `sshd_is_windows_cmd` — out of this file |
+| Gzip reader | no pipe into MSYS `tar` or `gzip`. Ship unit still pipes |
 | In-tool sudo | none |
 
 ### 2.2 Why This Requirement Exists (Direct CIAO Alignment)
@@ -135,12 +143,13 @@ Helpers (this product): `sshd_is_termux`, `sshd_is_git_bash`, `sshd_is_windows_c
 | **TP-LC-18** | Git Bash `install` does not call `pkg` | have |
 | **TP-SSHD-17** | Git Bash missing-sshd hint does not name `apt` | have |
 | **TP-LC-19** | Windows cmd `install` does not call `pkg` | have on the cmd detect; not this file’s ownership |
+| **TP-OS-GB-01** .. **TP-OS-GB-04** | MSYS2 / Git Bash reader does not take gzip on stdin; failure names gzip or tar | todo |
 
-This file adds no new test.
+The ship unit still pipes. A passing **TP-UL-*** row does not close this ban.
 
 **Matrix:** `reviews/requirement-test-matrix.md`  
 **Map:** `reviews/test-plan.md`
 
-**Last Updated**: 2026-10-14 (1.0.0 family coding home)  
+**Last Updated**: 2026-10-14 (1.1.0 MSYS2 / Git Bash gzip-stdin ban. Ship unit still pipes. 1.0.0 family coding home)  
 **Owner**: Cloudgen Wong  
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

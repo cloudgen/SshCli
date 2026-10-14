@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-shell-macos-cli-coding.md  
-**Status**: Active (Version 1.0.0)  
+**Status**: Active (Version 1.0.1)  
 **Area**: shell  
 **Key**: `requirement-shell-macos-cli-coding`  
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -46,7 +46,8 @@ This is the **macOS CLI coding** home for sshd-cli. It says how to write `./sshd
 7. Daemon rows **22–24** follow the POSIX rule: this family is not a command line for normal user only, so those rows show only for root. **MUST NOT** wrap `sudo` to unhide them.  
 8. **MUST NOT** use GNU-only `grep -P` or bash arrays. The ship unit stays POSIX `/bin/sh`.  
 9. **MUST** keep portable style on `requirement-shell-script-coding`.  
-10. When sshd is missing and `uname -s` is `Darwin`, `sshd_openssh_server_hint` **MUST** say to install the OpenSSH server on this Mac. **MUST NOT** name `brew` or run it.
+10. When sshd is missing and `uname -s` is `Darwin`, `sshd_openssh_server_hint` **MUST** say to install the OpenSSH server on this Mac. **MUST NOT** name `brew` or run it.  
+11. `download` and `upload` **MUST** keep the streamed pipe. They **MUST NOT** use the MSYS2 finished-file transfer. That ban is `requirement-shell-windows-git-bash-cli-coding`.
 
 ### 2.1 Implementation Notes (this project)
 
@@ -133,6 +134,6 @@ This file adds no new test.
 **Matrix:** `reviews/requirement-test-matrix.md`  
 **Map:** `reviews/test-plan.md`
 
-**Last Updated**: 2026-10-14 (1.0.0 family coding home)  
+**Last Updated**: 2026-10-14 (1.0.1 streamed pipe stays. 1.0.0 family coding home)  
 **Owner**: Cloudgen Wong  
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

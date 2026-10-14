@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-shell-fedora-redhat-cli-coding.md  
-**Status**: Active (Version 1.0.0)  
+**Status**: Active (Version 1.0.1)  
 **Area**: shell  
 **Key**: `requirement-shell-fedora-redhat-cli-coding`  
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -49,7 +49,8 @@ Portable style (`set -u`, prefixes, do-not-capture-read) stays on `requirement-s
 8. In-place `sed` **MUST** use `sed -i.bak` and then remove the `.bak`. Bare `sed -i` breaks the macOS coding home.  
 9. **MUST NOT** add `setenforce`, `chcon`, `semanage`, or `firewall-cmd`. This product does not manage SELinux or firewalld.  
 10. **MUST** keep portable style on `requirement-shell-script-coding` (`set -u`, prefixes, `out_*`, do-not-capture-read).  
-11. When sshd is missing on POSIX Linux, `sshd_openssh_server_hint` **MUST** name `dnf` for Fedora and RHEL and `apt` for Debian and Ubuntu in **one** sentence, and **MUST** say `${APP_NAME}` does not run that command. **MUST NOT** branch on `ID=` or `ID_LIKE` to pick a single distro sentence. **MUST NOT** run `dnf`, `yum`, or `apt`. Termux keeps the `sshd-cli install` next step.
+11. When sshd is missing on POSIX Linux, `sshd_openssh_server_hint` **MUST** name `dnf` for Fedora and RHEL and `apt` for Debian and Ubuntu in **one** sentence, and **MUST** say `${APP_NAME}` does not run that command. **MUST NOT** branch on `ID=` or `ID_LIKE` to pick a single distro sentence. **MUST NOT** run `dnf`, `yum`, or `apt`. Termux keeps the `sshd-cli install` next step.  
+12. `download` and `upload` **MUST** keep the streamed pipe. They **MUST NOT** use the MSYS2 finished-file transfer. That ban is `requirement-shell-windows-git-bash-cli-coding`.
 
 ### 2.1 Implementation Notes (this project)
 
@@ -140,6 +141,6 @@ This file adds no new test. There is no Fedora-only suite host.
 **Matrix:** `reviews/requirement-test-matrix.md`  
 **Map:** `reviews/test-plan.md`
 
-**Last Updated**: 2026-10-14 (1.0.0 family coding home)  
+**Last Updated**: 2026-10-14 (1.0.1 streamed pipe stays. 1.0.0 family coding home)  
 **Owner**: Cloudgen Wong  
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

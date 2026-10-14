@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-shell-debian-cli-coding.md  
-**Status**: Active (Version 1.0.0)  
+**Status**: Active (Version 1.0.1)  
 **Area**: shell  
 **Key**: `requirement-shell-debian-cli-coding`  
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -48,7 +48,8 @@ Portable style stays on `requirement-shell-script-coding`. OpenSSH start/stop, t
 7. Cache coding **MUST** use the Linux chain (`/dev/shm/cache` → `/tmp/cache` → `${HOME}/.cache`). The path table is `requirement-shell-cli-storage`.  
 8. In-place `sed` **MUST** use `sed -i.bak` and then remove the `.bak`.  
 9. **MUST** keep portable style on `requirement-shell-script-coding`.  
-10. When sshd is missing on POSIX Linux, the next step **MUST** name `apt` for Debian and Ubuntu in the same sentence as `dnf` for Fedora and RHEL, and **MUST** say this program does not run that command. **MUST NOT** print only “On Debian/Ubuntu: apt install openssh-server”. **MUST NOT** run `apt`.
+10. When sshd is missing on POSIX Linux, the next step **MUST** name `apt` for Debian and Ubuntu in the same sentence as `dnf` for Fedora and RHEL, and **MUST** say this program does not run that command. **MUST NOT** print only “On Debian/Ubuntu: apt install openssh-server”. **MUST NOT** run `apt`.  
+11. `download` and `upload` **MUST** keep the streamed pipe. They **MUST NOT** use the MSYS2 finished-file transfer. That ban is `requirement-shell-windows-git-bash-cli-coding`.
 
 ### 2.1 Implementation Notes (this project)
 
@@ -138,6 +139,6 @@ This file adds no new test. There is no Debian-only suite host.
 **Matrix:** `reviews/requirement-test-matrix.md`  
 **Map:** `reviews/test-plan.md`
 
-**Last Updated**: 2026-10-14 (1.0.0 family coding home)  
+**Last Updated**: 2026-10-14 (1.0.1 streamed pipe stays. 1.0.0 family coding home)  
 **Owner**: Cloudgen Wong  
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

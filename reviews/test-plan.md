@@ -243,6 +243,21 @@ This product **is** online-installable (`SCRIPT_URL`, `self-update`, `version-ch
 | TP-UL-17 | missing local directory fail-closed | test_ssh_download | requirement-domain-sshd | **have** |
 | TP-UL-18 | TTY client menu numbers upload **14** | test_ssh_download | requirement-domain-sshd · requirement-shell-cli-default-interaction | **have** |
 
+### TP-OS (folder tar.gz by OS family)
+
+These rows are not written. **TP-UL-01** .. **TP-UL-18** stay the non-MSYS pipe. The 1.35.0 suite run above did not include them. The ship unit still pipes.
+
+| TP-ID | Intent | Suite | Primary requirement(s) | Status |
+|-------|--------|-------|------------------------|--------|
+| TP-OS-GB-01 | MSYS2 / Git Bash reader does not take download or upload gzip on stdin | — | requirement-shell-windows-git-bash-cli-coding | **todo** |
+| TP-OS-GB-02 | Finished archive, file copy, file-operand extract, then remove the archive | — | requirement-shell-windows-git-bash-cli-coding | **todo** |
+| TP-OS-GB-03 | Failure names gzip or tar | — | requirement-shell-windows-git-bash-cli-coding | **todo** |
+| TP-OS-GB-04 | A short sleep is not the repair | — | requirement-shell-windows-git-bash-cli-coding | **todo** |
+| TP-OS-CMD-01 | Windows cmd keeps the streamed pipe | — | requirement-shell-windows-cmd-cli-coding | **todo** |
+| TP-OS-ALP-01 | Alpine keeps the streamed pipe | — | requirement-shell-alpine-cli-coding | **todo** |
+| TP-OS-BB-01 | BusyBox keeps the streamed pipe and does not rename applets | — | requirement-shell-busybox-cli-coding | **todo** |
+| TP-OS-OTH-01 | Other Linux keeps the streamed pipe | — | requirement-shell-other-linux-cli-coding | **todo** |
+
 ### TP-LC (local lifecycle)
 
 | TP-ID | Intent | Suite | Primary requirement(s) | Status |
