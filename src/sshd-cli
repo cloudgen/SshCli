@@ -58,7 +58,7 @@ APP_NAME="sshd-cli"
 : "${SHORT_DESCRIPTION:=${APP_DESC}}"
 : "${DESCRIPTION:=POSIX /bin/sh CLI: simplify Termux to install and run OpenSSH sshd (status/start/stop/port/keys/dns) plus self-install; Linux host deposit of ~/.ssh/config (backup-config / sync-config / sync-from-remote).}"
 # Product version SSOT (semver). Extractors use: grep '^VERSION="'
-VERSION="1.35.0"
+VERSION="1.35.1"
 : "${VERSION:=1.29.0}"
 
 # Runtime flags (safe defaults)
@@ -7260,11 +7260,14 @@ sshd_cmd_dns() {
 # with default (Host User, else this login). download:
 # pick a Host, TTY asks user (same default as ssh), pick or type a remote
 # folder, tar.gz on the remote, extract into this login's current directory.
-# Previous folders per Host are stored
+# When this login is the gzip reader and it is Git Bash, the archive is a
+# finished file copied with scp, not a stdin stream. Other readers keep
+# the stream. Previous folders per Host are stored
 # under ${HOME}/.local/${APP_NAME}/download-folders (mode 0600).
 #
 # ALIGNMENT: requirement-domain-sshd.md · requirement-shell-cli-interface.md
-# Last updated: 2026-09-12
+#            requirement-shell-windows-git-bash-cli-coding.md
+# Last updated: 2026-10-16
 # Lessons: INC-20260912-002 — ~/folder is allowed; remote quote uses "$HOME"
 #          (single-quoting the whole ~/path blocks remote tilde). ~ alone
 #          and ~user/path stay refused.
@@ -7667,6 +7670,359 @@ sshd_cmd_ssh() {
     return 0
 }
 
+# =============================================================================
+# sshd_gzip_text_is_msys — probe text names an MSYS2 / Git Bash gzip reader
+# =============================================================================
+#
+# GENERAL PURPOSE:
+# The remote probe prints one uname line and one OSTYPE line. This returns 0
+# only when uname is MINGW* or MSYS*, or OSTYPE is msys* or mingw*.
+# Windows_NT alone is not this reader.
+#
+# CIAO PRINCIPLES APPLIED:
+# - Caution: a failed or empty probe is not treated as MSYS.
+# - Intentional: the marker lines are the only match surface.
+# - Anti-fragile: peer OS text keeps the streamed pipe.
+# - Over-protect: do not match Windows_NT.
+#
+# ALIGNMENT:
+# - requirement-shell-windows-git-bash-cli-coding.md
+# - requirement-shell-windows-cmd-cli-coding.md
+#
+# Last updated: 2026-10-16
+# =============================================================================
+sshd_gzip_text_is_msys() {
+    _gt="${1-}"
+    case "${_gt}" in
+        *__SSHD_CLI_UNAME__MINGW*|*__SSHD_CLI_UNAME__MSYS*)
+            unset _gt
+            return 0
+            ;;
+    esac
+    case "${_gt}" in
+        *__SSHD_CLI_OSTYPE__msys*|*__SSHD_CLI_OSTYPE__mingw*|*__SSHD_CLI_OSTYPE__MSYS*|*__SSHD_CLI_OSTYPE__MINGW*)
+            unset _gt
+            return 0
+            ;;
+    esac
+    unset _gt
+    return 1
+}
+
+# =============================================================================
+# sshd_remote_reader_is_msys — ask the remote shell who reads gzip
+# =============================================================================
+#
+# GENERAL PURPOSE:
+# One BatchMode ssh prints uname -s and OSTYPE. Return 0 when that text is
+# an MSYS2 or Git Bash reader. A non-zero ssh, empty text, or Windows_NT
+# returns 1 so the caller keeps the streamed pipe.
+#
+# ALIGNMENT:
+# - requirement-shell-windows-git-bash-cli-coding.md
+# - requirement-domain-sshd.md
+#
+# Last updated: 2026-10-16
+# =============================================================================
+sshd_remote_reader_is_msys() {
+    _pr_bin="${1-}"
+    _pr_user="${2-}"
+    _pr_dns="${3-}"
+    _pr_cmd='printf "%s\n" "__SSHD_CLI_UNAME__$(uname -s 2>/dev/null)" "__SSHD_CLI_OSTYPE__${OSTYPE-}"'
+    _pr_out=""
+    _pr_rc=0
+    if [ -n "${_pr_user}" ]; then
+        _pr_out=$("${_pr_bin}" -o BatchMode=yes -o ConnectTimeout=15 -l "${_pr_user}" "${_pr_dns}" "${_pr_cmd}" </dev/null 2>/dev/null) || _pr_rc=$?
+    else
+        _pr_out=$("${_pr_bin}" -o BatchMode=yes -o ConnectTimeout=15 "${_pr_dns}" "${_pr_cmd}" </dev/null 2>/dev/null) || _pr_rc=$?
+    fi
+    if [ "${_pr_rc}" -ne 0 ]; then
+        unset _pr_bin _pr_user _pr_dns _pr_cmd _pr_out _pr_rc
+        return 1
+    fi
+    if sshd_gzip_text_is_msys "${_pr_out}"; then
+        unset _pr_bin _pr_user _pr_dns _pr_cmd _pr_out _pr_rc
+        return 0
+    fi
+    unset _pr_bin _pr_user _pr_dns _pr_cmd _pr_out _pr_rc
+    return 1
+}
+
+# =============================================================================
+# sshd_xfer_new_name — unique archive basename for one transfer
+# =============================================================================
+#
+# GENERAL PURPOSE:
+# Mint a dotfile basename that is unique in the destination directory.
+# The leaf comes from mktemp. The caller writes the bytes.
+#
+# ALIGNMENT:
+# - requirement-shell-windows-git-bash-cli-coding.md
+# - requirement-shell-cli-storage.md
+#
+# Last updated: 2026-10-16
+# =============================================================================
+sshd_xfer_new_name() {
+    : "${APP_NAME:=sshd-cli}"
+    _xn_tmp=$(mktemp -t "${APP_NAME}.xfer.XXXXXX") || return 1
+    _xn_leaf=$(basename "${_xn_tmp}")
+    rm -f "${_xn_tmp}"
+    printf '.%s.tar.gz' "${_xn_leaf}"
+    unset _xn_tmp _xn_leaf
+}
+
+# =============================================================================
+# sshd_xfer_show_err — replay captured remote text, then name gzip or tar
+# =============================================================================
+#
+# GENERAL PURPOSE:
+# When gzip or tar has already rejected the archive, the operator line names
+# that program. A connection failure that did not say gzip or tar stays an
+# ssh failure. Remote text is shown again before the [ERROR] line.
+#
+# ALIGNMENT:
+# - requirement-shell-windows-git-bash-cli-coding.md
+# - requirement-shell-output-requirements.md
+#
+# Last updated: 2026-10-16
+# =============================================================================
+sshd_xfer_show_err() {
+    : "${APP_NAME:=sshd-cli}"
+    _xe_kind="${1-}"
+    _xe_err="${2-}"
+    _xe_dns="${3-}"
+    _xe_folder="${4-}"
+    _xe_next="${5-}"
+    if [ -n "${_xe_err}" ]; then
+        printf '%s\n' "${_xe_err}" >&2
+    fi
+    case "${_xe_err}" in
+        *gzip*)
+            out_die "Cannot ${_xe_kind}: gzip rejected the archive for ${_xe_folder} on ${_xe_dns}. Next: ${_xe_next}, then ${APP_NAME} ${_xe_kind} ${_xe_dns} ${_xe_folder}"
+            ;;
+        *tar:*)
+            out_die "Cannot ${_xe_kind}: tar rejected the archive for ${_xe_folder} on ${_xe_dns}. Next: ${_xe_next}, then ${APP_NAME} ${_xe_kind} ${_xe_dns} ${_xe_folder}"
+            ;;
+        *)
+            out_die "Cannot ${_xe_kind}: ssh ${_xe_dns} failed. Next: ${_xe_next}, then ${APP_NAME} ${_xe_kind} ${_xe_dns} ${_xe_folder}"
+            ;;
+    esac
+}
+
+# =============================================================================
+# sshd_xfer_ssh — one BatchMode ssh with an optional -l user
+# =============================================================================
+#
+# GENERAL PURPOSE:
+# Run one remote command. The caller passes the command as one argument so
+# "$HOME" stays for the remote shell.
+#
+# ALIGNMENT:
+# - requirement-domain-sshd.md
+#
+# Last updated: 2026-10-16
+# =============================================================================
+sshd_xfer_ssh() {
+    _xs_bin="${1-}"
+    _xs_user="${2-}"
+    _xs_dns="${3-}"
+    _xs_cmd="${4-}"
+    if [ -n "${_xs_user}" ]; then
+        "${_xs_bin}" -o BatchMode=yes -o ConnectTimeout=15 -l "${_xs_user}" "${_xs_dns}" "${_xs_cmd}" </dev/null
+        _xs_rc=$?
+    else
+        "${_xs_bin}" -o BatchMode=yes -o ConnectTimeout=15 "${_xs_dns}" "${_xs_cmd}" </dev/null
+        _xs_rc=$?
+    fi
+    unset _xs_bin _xs_user _xs_dns _xs_cmd
+    return ${_xs_rc}
+}
+
+# =============================================================================
+# sshd_xfer_scp_to — copy a finished archive with scp (not a shell pipe)
+# =============================================================================
+#
+# GENERAL PURPOSE:
+# Put or get one file. Direction is "put" (local path, then remote spec) or
+# "get" (remote spec, then local path). scp is not cat-into-ssh.
+#
+# ALIGNMENT:
+# - requirement-shell-windows-git-bash-cli-coding.md
+#
+# Last updated: 2026-10-16
+# =============================================================================
+sshd_xfer_scp() {
+    _xp_scp="${1-}"
+    _xp_src="${2-}"
+    _xp_dst="${3-}"
+    "${_xp_scp}" -o BatchMode=yes -o ConnectTimeout=15 "${_xp_src}" "${_xp_dst}"
+    _xp_rc=$?
+    unset _xp_scp _xp_src _xp_dst
+    return ${_xp_rc}
+}
+
+# =============================================================================
+# sshd_upload_msys_file — finished archive, scp, file extract, remove
+# =============================================================================
+#
+# GENERAL PURPOSE:
+# The remote reader is MSYS2 or Git Bash. Build tar.gz here, prove it with
+# gzip -t, copy the file with scp, extract that file under the remote
+# "$HOME", then remove the archive. Do not pipe gzip into that reader.
+#
+# ALIGNMENT:
+# - requirement-shell-windows-git-bash-cli-coding.md
+# - requirement-domain-sshd.md
+#
+# Last updated: 2026-10-16
+# =============================================================================
+sshd_upload_msys_file() {
+    : "${APP_NAME:=sshd-cli}"
+    _um_scp=$(sshd_scp_cmd)
+    if [ -z "${_um_scp}" ] || [ ! -x "${_um_scp}" ]; then
+        out_die "Cannot upload: scp not found. Next: install openssh-client, then ${APP_NAME} upload ${_dns} ${_folder}"
+    fi
+    if ! command -v gzip >/dev/null 2>&1; then
+        out_die "Cannot upload: gzip not found. Next: install gzip, then ${APP_NAME} upload ${_dns} ${_folder}"
+    fi
+    _um_stage=$(mktemp -d -t "${APP_NAME}.upload.XXXXXX") || out_die "Cannot upload: could not create a temp folder for the archive. Next: ${APP_NAME} upload ${_dns} ${_folder}"
+    chmod 0700 "${_um_stage}" || true
+    if [ ! -d "${_um_stage}" ] || [ ! -w "${_um_stage}" ] || [ ! -x "${_um_stage}" ]; then
+        rm -rf "${_um_stage}"
+        out_die "Cannot upload: the temp folder for the archive is not usable. Next: ${APP_NAME} upload ${_dns} ${_folder}"
+    fi
+    _um_name=$(sshd_xfer_new_name) || true
+    if [ -z "${_um_name}" ]; then
+        rm -rf "${_um_stage}"
+        out_die "Cannot upload: could not name the archive. Next: ${APP_NAME} upload ${_dns} ${_folder}"
+    fi
+    _um_path="${_um_stage}/${_um_name}"
+    if ! tar czf "${_um_path}" -C "${_dir}" "${_base}"; then
+        rm -rf "${_um_stage}"
+        out_die "Cannot upload: tar could not build the archive for ${_folder}. Next: ${_next_ssh}, then ${APP_NAME} upload ${_dns} ${_folder}"
+    fi
+    if ! gzip -t "${_um_path}"; then
+        rm -rf "${_um_stage}"
+        out_die "Cannot upload: gzip rejected the archive for ${_folder}. Next: ${_next_ssh}, then ${APP_NAME} upload ${_dns} ${_folder}"
+    fi
+    if [ -n "${_user}" ]; then
+        _um_remote="${_user}@${_dns}:${_um_name}"
+    else
+        _um_remote="${_dns}:${_um_name}"
+    fi
+    if ! sshd_xfer_scp "${_um_scp}" "${_um_path}" "${_um_remote}"; then
+        rm -rf "${_um_stage}"
+        out_die "Cannot upload: scp could not copy the archive to ${_dns}. Next: ${_next_ssh}, then ${APP_NAME} upload ${_dns} ${_folder}"
+    fi
+    rm -rf "${_um_stage}"
+    _um_q=$(sshd_sh_quote "${_um_name}")
+    _um_cmd="tar xzf \"\$HOME\"/${_um_q} -C \"\$HOME\" && rm -f \"\$HOME\"/${_um_q}"
+    _um_errf=$(mktemp -t "${APP_NAME}.uploaderr.XXXXXX") || _um_errf=""
+    _um_rc=0
+    if [ -n "${_um_errf}" ]; then
+        if ! sshd_xfer_ssh "${_bin}" "${_user}" "${_dns}" "${_um_cmd}" 2>"${_um_errf}"; then
+            _um_rc=1
+        fi
+        _um_err=$(cat "${_um_errf}" 2>/dev/null || true)
+        rm -f "${_um_errf}"
+    else
+        if ! sshd_xfer_ssh "${_bin}" "${_user}" "${_dns}" "${_um_cmd}"; then
+            _um_rc=1
+        fi
+        _um_err=""
+    fi
+    if [ "${_um_rc}" -ne 0 ]; then
+        _um_rm="rm -f \"\$HOME\"/${_um_q}"
+        sshd_xfer_ssh "${_bin}" "${_user}" "${_dns}" "${_um_rm}" >/dev/null 2>&1 || true
+        sshd_xfer_show_err "upload" "${_um_err}" "${_dns}" "${_folder}" "${_next_ssh}"
+    fi
+    unset _um_scp _um_stage _um_name _um_path _um_remote _um_q _um_cmd _um_errf _um_rc _um_err _um_rm
+    return 0
+}
+
+# =============================================================================
+# sshd_download_msys_file — remote finished archive, scp, local file extract
+# =============================================================================
+#
+# GENERAL PURPOSE:
+# This login is the gzip reader and it is MSYS2 or Git Bash. The remote
+# side finishes tar czf to a file and gzip -t. scp copies that file here.
+# Local tar xzf names the file. Both copies of the archive are removed.
+#
+# ALIGNMENT:
+# - requirement-shell-windows-git-bash-cli-coding.md
+# - requirement-domain-sshd.md
+#
+# Last updated: 2026-10-16
+# =============================================================================
+sshd_download_msys_file() {
+    : "${APP_NAME:=sshd-cli}"
+    _dm_scp=$(sshd_scp_cmd)
+    if [ -z "${_dm_scp}" ] || [ ! -x "${_dm_scp}" ]; then
+        out_die "Cannot download: scp not found. Next: install openssh-client, then ${APP_NAME} download ${_dns} ${_folder}"
+    fi
+    if ! command -v gzip >/dev/null 2>&1; then
+        out_die "Cannot download: gzip not found. Next: install gzip, then ${APP_NAME} download ${_dns} ${_folder}"
+    fi
+    _dm_name=$(sshd_xfer_new_name) || out_die "Cannot download: could not name the archive. Next: ${APP_NAME} download ${_dns} ${_folder}"
+    _dm_q=$(sshd_sh_quote "${_dm_name}")
+    _dm_build="test -d ${_qpath} && tar czf \"\$HOME\"/${_dm_q} -C ${_qdir} ${_qbase} && gzip -t \"\$HOME\"/${_dm_q}"
+    _dm_errf=$(mktemp -t "${APP_NAME}.downloaderr.XXXXXX") || _dm_errf=""
+    _dm_rc=0
+    if [ -n "${_dm_errf}" ]; then
+        if ! sshd_xfer_ssh "${_bin}" "${_user}" "${_dns}" "${_dm_build}" 2>"${_dm_errf}"; then
+            _dm_rc=1
+        fi
+        _dm_err=$(cat "${_dm_errf}" 2>/dev/null || true)
+        rm -f "${_dm_errf}"
+    else
+        if ! sshd_xfer_ssh "${_bin}" "${_user}" "${_dns}" "${_dm_build}"; then
+            _dm_rc=1
+        fi
+        _dm_err=""
+    fi
+    if [ "${_dm_rc}" -ne 0 ]; then
+        _dm_rm="rm -f \"\$HOME\"/${_dm_q}"
+        sshd_xfer_ssh "${_bin}" "${_user}" "${_dns}" "${_dm_rm}" >/dev/null 2>&1 || true
+        sshd_xfer_show_err "download" "${_dm_err}" "${_dns}" "${_folder}" "${_next_ssh}"
+    fi
+    _dm_stage=$(mktemp -d -t "${APP_NAME}.download.XXXXXX") || out_die "Cannot download: could not create a temp folder for the archive. Next: ${APP_NAME} download ${_dns} ${_folder}"
+    chmod 0700 "${_dm_stage}" || true
+    if [ ! -d "${_dm_stage}" ] || [ ! -w "${_dm_stage}" ] || [ ! -x "${_dm_stage}" ]; then
+        rm -rf "${_dm_stage}"
+        out_die "Cannot download: the temp folder for the archive is not usable. Next: ${APP_NAME} download ${_dns} ${_folder}"
+    fi
+    _dm_path="${_dm_stage}/${_dm_name}"
+    if [ -n "${_user}" ]; then
+        _dm_remote="${_user}@${_dns}:${_dm_name}"
+    else
+        _dm_remote="${_dns}:${_dm_name}"
+    fi
+    if ! sshd_xfer_scp "${_dm_scp}" "${_dm_remote}" "${_dm_path}"; then
+        _dm_rm="rm -f \"\$HOME\"/${_dm_q}"
+        sshd_xfer_ssh "${_bin}" "${_user}" "${_dns}" "${_dm_rm}" >/dev/null 2>&1 || true
+        rm -rf "${_dm_stage}"
+        out_die "Cannot download: scp could not copy the archive from ${_dns}. Next: ${_next_ssh}, then ${APP_NAME} download ${_dns} ${_folder}"
+    fi
+    if ! gzip -t "${_dm_path}"; then
+        _dm_rm="rm -f \"\$HOME\"/${_dm_q}"
+        sshd_xfer_ssh "${_bin}" "${_user}" "${_dns}" "${_dm_rm}" >/dev/null 2>&1 || true
+        rm -rf "${_dm_stage}"
+        out_die "Cannot download: gzip rejected the archive from ${_dns}. Next: ${_next_ssh}, then ${APP_NAME} download ${_dns} ${_folder}"
+    fi
+    if ! tar xzf "${_dm_path}" -C "${_cwd}"; then
+        _dm_rm="rm -f \"\$HOME\"/${_dm_q}"
+        sshd_xfer_ssh "${_bin}" "${_user}" "${_dns}" "${_dm_rm}" >/dev/null 2>&1 || true
+        rm -rf "${_dm_stage}"
+        out_die "Cannot download: tar could not extract the archive into ${_cwd}. Next: ${_next_ssh}, then ${APP_NAME} download ${_dns} ${_folder}"
+    fi
+    rm -rf "${_dm_stage}"
+    _dm_rm="rm -f \"\$HOME\"/${_dm_q}"
+    sshd_xfer_ssh "${_bin}" "${_user}" "${_dns}" "${_dm_rm}" >/dev/null 2>&1 || true
+    unset _dm_scp _dm_name _dm_q _dm_build _dm_errf _dm_rc _dm_err _dm_rm _dm_stage _dm_path _dm_remote
+    return 0
+}
+
 sshd_cmd_download() {
     : "${JSON:=0}"
     : "${TTY:=0}"
@@ -7722,32 +8078,64 @@ sshd_cmd_download() {
     _qpath=$(sshd_download_remote_quote "${_folder}")
     _qdir=$(sshd_download_remote_quote "${_dir}")
     _qbase=$(sshd_sh_quote "${_base}")
-    _remote_cmd="test -d ${_qpath} && tar czf - -C ${_qdir} ${_qbase}"
     _cwd=$(pwd)
-    _tmp=$(mktemp -t "${APP_NAME}.download.XXXXXX") || out_die "Could not create a temp file for download."
-    out_info "Downloading ${_folder} from ${_dns} as ${_user:-${DNS_R_USER:-this login}} into ${_cwd}"
     if [ -n "${_user}" ]; then
         _next_ssh="ssh -l ${_user} ${_dns}"
-        if ! "${_bin}" -o BatchMode=yes -o ConnectTimeout=15 -l "${_user}" "${_dns}" "${_remote_cmd}" > "${_tmp}"; then
-            rm -f "${_tmp}"
-            out_die "Cannot download: ssh ${_dns} failed. Next: ${_next_ssh}, then ${APP_NAME} download ${_dns} ${_folder}"
-        fi
     else
         _next_ssh="ssh ${_dns}"
-        if ! "${_bin}" -o BatchMode=yes -o ConnectTimeout=15 "${_dns}" "${_remote_cmd}" > "${_tmp}"; then
-            rm -f "${_tmp}"
-            out_die "Cannot download: ssh ${_dns} failed. Next: ${_next_ssh}, then ${APP_NAME} download ${_dns} ${_folder}"
+    fi
+    out_info "Downloading ${_folder} from ${_dns} as ${_user:-${DNS_R_USER:-this login}} into ${_cwd}"
+    if sshd_is_git_bash; then
+        sshd_download_msys_file
+    else
+        _remote_cmd="test -d ${_qpath} && tar czf - -C ${_qdir} ${_qbase}"
+        _tmp=$(mktemp -t "${APP_NAME}.download.XXXXXX") || out_die "Could not create a temp file for download."
+        _dl_errf=$(mktemp -t "${APP_NAME}.downloaderr.XXXXXX") || _dl_errf=""
+        _dl_rc=0
+        if [ -n "${_user}" ]; then
+            if [ -n "${_dl_errf}" ]; then
+                if ! "${_bin}" -o BatchMode=yes -o ConnectTimeout=15 -l "${_user}" "${_dns}" "${_remote_cmd}" > "${_tmp}" 2>"${_dl_errf}"; then
+                    _dl_rc=1
+                fi
+            else
+                if ! "${_bin}" -o BatchMode=yes -o ConnectTimeout=15 -l "${_user}" "${_dns}" "${_remote_cmd}" > "${_tmp}"; then
+                    _dl_rc=1
+                fi
+            fi
+        else
+            if [ -n "${_dl_errf}" ]; then
+                if ! "${_bin}" -o BatchMode=yes -o ConnectTimeout=15 "${_dns}" "${_remote_cmd}" > "${_tmp}" 2>"${_dl_errf}"; then
+                    _dl_rc=1
+                fi
+            else
+                if ! "${_bin}" -o BatchMode=yes -o ConnectTimeout=15 "${_dns}" "${_remote_cmd}" > "${_tmp}"; then
+                    _dl_rc=1
+                fi
+            fi
         fi
-    fi
-    if [ ! -s "${_tmp}" ]; then
+        _dl_err=""
+        if [ -n "${_dl_errf}" ]; then
+            _dl_err=$(cat "${_dl_errf}" 2>/dev/null || true)
+            rm -f "${_dl_errf}"
+        fi
+        if [ "${_dl_rc}" -ne 0 ]; then
+            rm -f "${_tmp}"
+            sshd_xfer_show_err "download" "${_dl_err}" "${_dns}" "${_folder}" "${_next_ssh}"
+        fi
+        if [ -n "${_dl_err}" ]; then
+            # remote program text, not a product message
+            printf '%s\n' "${_dl_err}" >&2
+        fi
+        if [ ! -s "${_tmp}" ]; then
+            rm -f "${_tmp}"
+            out_die "Cannot download: remote ${_dns} returned an empty archive for ${_folder}. Next: ssh ${_dns} and check that folder exists"
+        fi
+        if ! tar xzf "${_tmp}" -C "${_cwd}"; then
+            rm -f "${_tmp}"
+            out_die "Cannot download: tar could not extract the archive into ${_cwd}. Next: check this folder is writable, then ${APP_NAME} download ${_dns} ${_folder}"
+        fi
         rm -f "${_tmp}"
-        out_die "Cannot download: remote ${_dns} returned an empty archive for ${_folder}. Next: ssh ${_dns} and check that folder exists"
     fi
-    if ! tar xzf "${_tmp}" -C "${_cwd}"; then
-        rm -f "${_tmp}"
-        out_die "Cannot download: could not extract the archive into ${_cwd}. Next: check this folder is writable, then ${APP_NAME} download ${_dns} ${_folder}"
-    fi
-    rm -f "${_tmp}"
     sshd_download_folders_save "${_dns}" "${_folder}" || true
     if [ "${JSON}" -eq 1 ]; then
         _json_user="${_user}"
@@ -7758,7 +8146,7 @@ sshd_cmd_download() {
     else
         out_success "Downloaded ${_folder} from ${_dns} into ${_cwd}/${_base}"
     fi
-    unset _sel _folder _row _dns _n _user _base _dir _bin _qpath _qdir _qbase _remote_cmd _cwd _tmp _json_user _next_ssh
+    unset _sel _folder _row _dns _n _user _base _dir _bin _qpath _qdir _qbase _remote_cmd _cwd _tmp _json_user _next_ssh _dl_errf _dl_rc _dl_err
     return 0
 }
 
@@ -7771,9 +8159,13 @@ sshd_cmd_download() {
 # tar only. Remote dest is "$HOME" for the ssh user — not this login HOME.
 # Memory: ${HOME}/.local/${APP_NAME}/upload-folders (mode 0600), not download-folders.
 #
+# When the remote gzip reader is MSYS2 or Git Bash, the archive is a finished
+# file copied with scp. Other readers keep the stdin stream.
+#
 # ALIGNMENT: requirement-domain-sshd.md · requirement-shell-cli-interface.md
 #            requirement-shell-interactive-vs-noninteractive.md
-# Last updated: 2026-09-14
+#            requirement-shell-windows-git-bash-cli-coding.md
+# Last updated: 2026-10-16
 # =============================================================================
 
 sshd_upload_folders_path() {
@@ -8023,18 +8415,51 @@ sshd_cmd_upload() {
     if ! command -v tar >/dev/null 2>&1; then
         out_die "Cannot upload: tar not found. Next: install tar, then ${APP_NAME} upload ${_dns} ${_folder}"
     fi
-    _remote_cmd='tar xzf - -C "$HOME"'
     _dest="\$HOME/${_base}"
-    out_info "Uploading ${_folder} to ${_dns} as ${_user:-${DNS_R_USER:-this login}} (extract under that ssh user home as ${_base})"
     if [ -n "${_user}" ]; then
         _next_ssh="ssh -l ${_user} ${_dns}"
-        if ! tar czf - -C "${_dir}" "${_base}" | "${_bin}" -o BatchMode=yes -o ConnectTimeout=15 -l "${_user}" "${_dns}" "${_remote_cmd}"; then
-            out_die "Cannot upload: ssh ${_dns} failed. Next: ${_next_ssh}, then ${APP_NAME} upload ${_dns} ${_folder}"
-        fi
     else
         _next_ssh="ssh ${_dns}"
-        if ! tar czf - -C "${_dir}" "${_base}" | "${_bin}" -o BatchMode=yes -o ConnectTimeout=15 "${_dns}" "${_remote_cmd}"; then
-            out_die "Cannot upload: ssh ${_dns} failed. Next: ${_next_ssh}, then ${APP_NAME} upload ${_dns} ${_folder}"
+    fi
+    out_info "Uploading ${_folder} to ${_dns} as ${_user:-${DNS_R_USER:-this login}} (extract under that ssh user home as ${_base})"
+    if sshd_remote_reader_is_msys "${_bin}" "${_user}" "${_dns}"; then
+        sshd_upload_msys_file
+    else
+        _remote_cmd='tar xzf - -C "$HOME"'
+        _up_errf=$(mktemp -t "${APP_NAME}.uploaderr.XXXXXX") || _up_errf=""
+        _up_rc=0
+        if [ -n "${_user}" ]; then
+            if [ -n "${_up_errf}" ]; then
+                if ! { tar czf - -C "${_dir}" "${_base}" | "${_bin}" -o BatchMode=yes -o ConnectTimeout=15 -l "${_user}" "${_dns}" "${_remote_cmd}"; } 2>"${_up_errf}"; then
+                    _up_rc=1
+                fi
+            else
+                if ! tar czf - -C "${_dir}" "${_base}" | "${_bin}" -o BatchMode=yes -o ConnectTimeout=15 -l "${_user}" "${_dns}" "${_remote_cmd}"; then
+                    _up_rc=1
+                fi
+            fi
+        else
+            if [ -n "${_up_errf}" ]; then
+                if ! { tar czf - -C "${_dir}" "${_base}" | "${_bin}" -o BatchMode=yes -o ConnectTimeout=15 "${_dns}" "${_remote_cmd}"; } 2>"${_up_errf}"; then
+                    _up_rc=1
+                fi
+            else
+                if ! tar czf - -C "${_dir}" "${_base}" | "${_bin}" -o BatchMode=yes -o ConnectTimeout=15 "${_dns}" "${_remote_cmd}"; then
+                    _up_rc=1
+                fi
+            fi
+        fi
+        _up_err=""
+        if [ -n "${_up_errf}" ]; then
+            _up_err=$(cat "${_up_errf}" 2>/dev/null || true)
+            rm -f "${_up_errf}"
+        fi
+        if [ "${_up_rc}" -ne 0 ]; then
+            sshd_xfer_show_err "upload" "${_up_err}" "${_dns}" "${_folder}" "${_next_ssh}"
+        fi
+        if [ -n "${_up_err}" ]; then
+            # remote program text, not a product message
+            printf '%s\n' "${_up_err}" >&2
         fi
     fi
     sshd_upload_folders_save "${_dns}" "${_folder}" || true
@@ -8047,7 +8472,7 @@ sshd_cmd_upload() {
     else
         out_success "Uploaded ${_folder} to ${_dns} (extract under that ssh user home as ${_base})"
     fi
-    unset _sel _folder _row _dns _n _user _local _base _dir _bin _remote_cmd _dest _json_user _next_ssh
+    unset _sel _folder _row _dns _n _user _local _base _dir _bin _remote_cmd _dest _json_user _next_ssh _up_errf _up_rc _up_err
     return 0
 }
 

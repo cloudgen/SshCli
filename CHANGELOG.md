@@ -7,13 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.35.1] - 2026-10-16
+
+### Fixed
+
+- **MSYS gzip stdin.** When the process that reads a `download` or `upload` gzip is MSYS2 or Git Bash, the ship unit finishes the archive, checks it with `gzip -t`, copies the file with `scp`, extracts that file, then removes the archive. A short sleep is not the repair. Failure names gzip or tar. Windows cmd, macOS, Debian (including Ubuntu), Fedora and Red Hat, Termux, BusyBox, Alpine, and other Linux keep the streamed pipe. `Windows_NT` alone keeps the pipe. **TP-UL-01** .. **TP-UL-18** stay the non-MSYS pipe (fake `ssh`). **TP-OS-GB-01** .. **TP-OS-GB-04** and **TP-OS-CMD-01** cover the split. Law: `requirement-shell-windows-git-bash-cli-coding` **1.2.0** · `requirement-shell-windows-cmd-cli-coding` **1.0.1** · `requirement-domain-sshd` **1.27.6** · `requirement-shell-cli-interface` **1.14.16** · `requirement-shell-cli-language` **1.7.2**.
+
 ### Added
 
-- **OS CLI coding homes.** Windows cmd, Alpine, BusyBox, and other POSIX Linux each have a shell requirement. Windows cmd keeps the streamed pipe. `Windows_NT` alone is not the MSYS ban. Alpine keeps the pipe and does not add an `apk` wrap. BusyBox keeps `busybox APPLET` and the pipe. Other Linux keeps the pipe and does not invent a package tool. Product `VERSION` stays **1.35.0**. Law: `requirement-shell-windows-cmd-cli-coding` **1.0.0** · `requirement-shell-alpine-cli-coding` **1.0.0** · `requirement-shell-busybox-cli-coding` **1.0.0** · `requirement-shell-other-linux-cli-coding` **1.0.0** · `requirement-class-software-dev` **1.0.7** · `requirement-shell-script-coding` **1.1.5**.
-
-### Changed
-
-- **MSYS gzip stdin.** When the process that reads a `download` or `upload` gzip is MSYS2 or Git Bash, the transfer must finish the archive, copy that file, extract the file, then remove the archive. A short sleep is not the repair. Failure must name gzip or tar. Windows cmd, macOS, Debian (including Ubuntu), Fedora and Red Hat, Termux, BusyBox, Alpine, and other Linux keep the streamed pipe. This build still pipes on every Host. **TP-UL-01** .. **TP-UL-18** stay the non-MSYS pipe (fake `ssh`). **TP-OS-*** are not written. Law: `requirement-shell-windows-git-bash-cli-coding` **1.1.0** · `requirement-shell-debian-cli-coding` **1.0.1** · `requirement-shell-fedora-redhat-cli-coding` **1.0.1** · `requirement-shell-macos-cli-coding` **1.0.1** · `requirement-shell-termux-cli-coding` **1.0.1** · `requirement-domain-sshd` **1.27.5** · `requirement-shell-cli-interface` **1.14.15**.
+- **OS CLI coding homes** (recorded while the product was **1.35.0**, released with this note). Windows cmd, Alpine, BusyBox, and other POSIX Linux each have a shell requirement. Windows cmd keeps the streamed pipe. `Windows_NT` alone is not the MSYS ban. Alpine keeps the pipe and does not add an `apk` wrap. BusyBox keeps `busybox APPLET` and the pipe. Other Linux keeps the pipe and does not invent a package tool. Law: `requirement-shell-alpine-cli-coding` **1.0.0** · `requirement-shell-busybox-cli-coding` **1.0.0** · `requirement-shell-other-linux-cli-coding` **1.0.0** · `requirement-class-software-dev` **1.0.7** · `requirement-shell-script-coding` **1.1.5** · `requirement-shell-debian-cli-coding` **1.0.1** · `requirement-shell-fedora-redhat-cli-coding` **1.0.1** · `requirement-shell-macos-cli-coding` **1.0.1** · `requirement-shell-termux-cli-coding` **1.0.1**.
 
 ## [1.35.0] - 2026-10-14
 

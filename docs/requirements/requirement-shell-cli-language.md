@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-shell-cli-language.md
-**Status**: Active (Version 1.7.1)
+**Status**: Active (Version 1.7.2)
 **Area**: shell
 **Key**: `requirement-shell-cli-language`
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -159,12 +159,12 @@ Back and Exit on these boards:
 
 ### 2.4.1 Worked samples
 
-These fences are a live run with the terminal ink written as markdown: **bold** short, *italic* long. The version token is the live `VERSION`. These fences show `1.35.0`. The language rows in the samples are **71** through **83**. The reserved numbers **70** and **84** through **89** are not printed. The choose-prompt in the source ends with one space. These fences omit that space. **MUST** print the front board, and the opening of human `help` and human `about`, for each code as these samples say. **MUST NOT** invent a line the ship unit does not print. Deeper boards keep the English verb as the leaf short (§2.4). The language-board longs in a language other than English are §2.4.2. The §2.6 fences stay the full functions.
+These fences are a live run with the terminal ink written as markdown: **bold** short, *italic* long. The version token is the live `VERSION`. These fences show `1.35.1`. The language rows in the samples are **71** through **83**. The reserved numbers **70** and **84** through **89** are not printed. The choose-prompt in the source ends with one space. These fences omit that space. **MUST** print the front board, and the opening of human `help` and human `about`, for each code as these samples say. **MUST NOT** invent a line the ship unit does not print. Deeper boards keep the English verb as the leaf short (§2.4). The language-board longs in a language other than English are §2.4.2. The §2.6 fences stay the full functions.
 
 English (`en`), front board, then the language board, then the opening of `help` and `about`:
 
 ```text
-[INFO] **sshd-cli**(*1.35.0*)
+[INFO] **sshd-cli**(*1.35.1*)
 1. **client-side**: *this login OpenSSH client (~/.ssh/config, ssh, folders)*
 2. **server-side**: *this host OpenSSH sshd (listen, keys, port)*
 5. **sudoers**: *grant and drafts for passwordless sudo*
@@ -175,7 +175,7 @@ Choose a number, or type the command name:
 ```
 
 ```text
-[INFO] **sshd-cli**(*1.35.0*) — language
+[INFO] **sshd-cli**(*1.35.1*) — language
 71. **English**: *use English for this menu*
 72. **简体中文**: *use Simplified Chinese for this menu*
 73. **繁體中文**: *use Traditional Chinese for this menu*
@@ -197,14 +197,14 @@ Choose a number, or type the command name:
 [INFO] sshd-cli — Simplify Termux to install sshd
 [INFO] Usage:
   sshd-cli [command] [options]
-[INFO] === sshd-cli 1.35.0 - About / Diagnostics ===
+[INFO] === sshd-cli 1.35.1 - About / Diagnostics ===
 [OK] sshd-cli is properly installed.
 ```
 
 Simplified Chinese (`zh-Hans`), after **72**:
 
 ```text
-[INFO] **sshd-cli**(*1.35.0*)
+[INFO] **sshd-cli**(*1.35.1*)
 1. **客户端**: *这个登录的 OpenSSH 客户端（~/.ssh/config、ssh、文件夹）*
 2. **服务器端**: *这台主机的 OpenSSH sshd（监听、密钥、端口）*
 5. **语言**: *这个菜单的显示语言*
@@ -218,14 +218,14 @@ Simplified Chinese (`zh-Hans`), after **72**:
 [INFO] sshd-cli — 简化 Termux 安装 sshd
 [INFO] 用法：
   sshd-cli [命令] [选项]
-[INFO] === sshd-cli 1.35.0 - 关于 / 诊断 ===
+[INFO] === sshd-cli 1.35.1 - 关于 / 诊断 ===
 [OK] sshd-cli 已正确安装。
 ```
 
 Traditional Chinese (`zh-Hant`), after **73**:
 
 ```text
-[INFO] **sshd-cli**(*1.35.0*)
+[INFO] **sshd-cli**(*1.35.1*)
 1. **用戶端**: *這個登入的 OpenSSH 用戶端（~/.ssh/config、ssh、資料夾）*
 2. **伺服器端**: *這台主機的 OpenSSH sshd（接聽、金鑰、連接埠）*
 5. **語言**: *這個選單的顯示語言*
@@ -239,14 +239,14 @@ Traditional Chinese (`zh-Hant`), after **73**:
 [INFO] sshd-cli — 簡化 Termux 安裝 sshd
 [INFO] 用法：
   sshd-cli [命令] [選項]
-[INFO] === sshd-cli 1.35.0 - 關於 / 診斷 ===
+[INFO] === sshd-cli 1.35.1 - 關於 / 診斷 ===
 [OK] sshd-cli 已正確安裝。
 ```
 
 Spanish (`es`), after **74**:
 
 ```text
-[INFO] **sshd-cli**(*1.35.0*)
+[INFO] **sshd-cli**(*1.35.1*)
 1. **cliente**: *cliente OpenSSH de este inicio (~/.ssh/config, ssh, carpetas)*
 2. **servidor**: *sshd OpenSSH de este equipo (escucha, claves, puerto)*
 5. **idioma**: *idioma de este menú*
@@ -260,14 +260,14 @@ Elija un número, o escriba el nombre del comando:
 [INFO] sshd-cli — simplificar la instalación de sshd en Termux
 [INFO] Uso:
   sshd-cli [comando] [opciones]
-[INFO] === sshd-cli 1.35.0 - Acerca de / diagnóstico ===
+[INFO] === sshd-cli 1.35.1 - Acerca de / diagnóstico ===
 [OK] sshd-cli está instalado correctamente.
 ```
 
 Arabic (`ar`), after **75**:
 
 ```text
-[INFO] **sshd-cli**(*1.35.0*)
+[INFO] **sshd-cli**(*1.35.1*)
 1. **عميل**: *عميل OpenSSH لهذا الدخول (~/.ssh/config وssh والمجلدات)*
 2. **خادم**: *sshd الخاص بـ OpenSSH على هذا الجهاز (الاستماع والمفاتيح والمنفذ)*
 5. **لغة**: *لغة العرض لهذه القائمة*
@@ -281,14 +281,14 @@ Arabic (`ar`), after **75**:
 [INFO] sshd-cli — تبسيط تثبيت sshd على Termux
 [INFO] الاستخدام:
   sshd-cli [أمر] [خيارات]
-[INFO] === sshd-cli 1.35.0 - حول / تشخيص ===
+[INFO] === sshd-cli 1.35.1 - حول / تشخيص ===
 [OK] sshd-cli مثبت بشكل صحيح.
 ```
 
 French (`fr`), after **76**:
 
 ```text
-[INFO] **sshd-cli**(*1.35.0*)
+[INFO] **sshd-cli**(*1.35.1*)
 1. **client**: *client OpenSSH de cette session (~/.ssh/config, ssh, dossiers)*
 2. **serveur**: *sshd OpenSSH de cet hôte (écoute, clés, port)*
 5. **langue**: *langue d'affichage de ce menu*
@@ -302,14 +302,14 @@ Choisissez un numéro, ou saisissez le nom de la commande :
 [INFO] sshd-cli — simplifier l'installation de sshd sur Termux
 [INFO] Utilisation :
   sshd-cli [commande] [options]
-[INFO] === sshd-cli 1.35.0 - À propos / diagnostic ===
+[INFO] === sshd-cli 1.35.1 - À propos / diagnostic ===
 [OK] sshd-cli est correctement installé.
 ```
 
 Portuguese (`pt`), after **77**:
 
 ```text
-[INFO] **sshd-cli**(*1.35.0*)
+[INFO] **sshd-cli**(*1.35.1*)
 1. **cliente**: *cliente OpenSSH deste login (~/.ssh/config, ssh, pastas)*
 2. **servidor**: *sshd OpenSSH deste equipamento (escuta, chaves, porta)*
 5. **idioma**: *idioma de exibição deste menu*
@@ -323,14 +323,14 @@ Escolha um número, ou escreva o nome do comando:
 [INFO] sshd-cli — simplificar a instalação de sshd no Termux
 [INFO] Uso:
   sshd-cli [comando] [opções]
-[INFO] === sshd-cli 1.35.0 - Acerca de / diagnóstico ===
+[INFO] === sshd-cli 1.35.1 - Acerca de / diagnóstico ===
 [OK] sshd-cli está instalado corretamente.
 ```
 
 Russian (`ru`), after **78**:
 
 ```text
-[INFO] **sshd-cli**(*1.35.0*)
+[INFO] **sshd-cli**(*1.35.1*)
 1. **клиент**: *клиент OpenSSH этого входа (~/.ssh/config, ssh, папки)*
 2. **сервер**: *sshd OpenSSH этого узла (прослушивание, ключи, порт)*
 5. **язык**: *язык отображения этого меню*
@@ -344,14 +344,14 @@ Russian (`ru`), after **78**:
 [INFO] sshd-cli — упростить установку sshd в Termux
 [INFO] Использование:
   sshd-cli [команда] [параметры]
-[INFO] === sshd-cli 1.35.0 - О программе / диагностика ===
+[INFO] === sshd-cli 1.35.1 - О программе / диагностика ===
 [OK] sshd-cli установлен правильно.
 ```
 
 German (`de`), after **79**:
 
 ```text
-[INFO] **sshd-cli**(*1.35.0*)
+[INFO] **sshd-cli**(*1.35.1*)
 1. **Client**: *OpenSSH-Client dieser Anmeldung (~/.ssh/config, ssh, Ordner)*
 2. **Server**: *OpenSSH-sshd dieses Rechners (wartet, Schlüssel, Port)*
 5. **Sprache**: *Anzeigesprache dieses Menüs*
@@ -365,14 +365,14 @@ Wählen Sie eine Nummer, oder geben Sie den Befehlsnamen ein:
 [INFO] sshd-cli — sshd auf Termux einfach installieren
 [INFO] Verwendung:
   sshd-cli [Befehl] [Optionen]
-[INFO] === sshd-cli 1.35.0 - Über / Diagnose ===
+[INFO] === sshd-cli 1.35.1 - Über / Diagnose ===
 [OK] sshd-cli ist ordnungsgemäß installiert.
 ```
 
 Japanese (`ja`), after **80**:
 
 ```text
-[INFO] **sshd-cli**(*1.35.0*)
+[INFO] **sshd-cli**(*1.35.1*)
 1. **クライアント**: *このログインの OpenSSH クライアント（~/.ssh/config、ssh、フォルダ）*
 2. **サーバー**: *このホストの OpenSSH sshd（待ち受け、鍵、ポート）*
 5. **言語**: *このメニューの表示言語*
@@ -386,14 +386,14 @@ Japanese (`ja`), after **80**:
 [INFO] sshd-cli — Termux で sshd を簡単に導入する
 [INFO] 使い方:
   sshd-cli [コマンド] [オプション]
-[INFO] === sshd-cli 1.35.0 - 概要 / 診断 ===
+[INFO] === sshd-cli 1.35.1 - 概要 / 診断 ===
 [OK] sshd-cli は正しく配置されています。
 ```
 
 Korean (`ko`), after **81**:
 
 ```text
-[INFO] **sshd-cli**(*1.35.0*)
+[INFO] **sshd-cli**(*1.35.1*)
 1. **클라이언트**: *이 로그인의 OpenSSH 클라이언트(~/.ssh/config, ssh, 폴더)*
 2. **서버**: *이 호스트의 OpenSSH sshd(대기, 키, 포트)*
 5. **언어**: *이 메뉴의 표시 언어*
@@ -407,14 +407,14 @@ Korean (`ko`), after **81**:
 [INFO] sshd-cli — Termux에서 sshd 설치를 단순하게
 [INFO] 사용법:
   sshd-cli [명령] [옵션]
-[INFO] === sshd-cli 1.35.0 - 개요 / 진단 ===
+[INFO] === sshd-cli 1.35.1 - 개요 / 진단 ===
 [OK] sshd-cli가 올바르게 설치되어 있습니다.
 ```
 
 Dutch (`nl`), after **82**:
 
 ```text
-[INFO] **sshd-cli**(*1.35.0*)
+[INFO] **sshd-cli**(*1.35.1*)
 1. **client**: *OpenSSH-client van deze login (~/.ssh/config, ssh, mappen)*
 2. **server**: *OpenSSH sshd van deze host (luisteren, sleutels, poort)*
 5. **taal**: *weergavetaal van dit menu*
@@ -428,14 +428,14 @@ Kies een nummer, of typ de opdrachtnaam:
 [INFO] sshd-cli — sshd installeren op Termux vereenvoudigen
 [INFO] Gebruik:
   sshd-cli [opdracht] [opties]
-[INFO] === sshd-cli 1.35.0 - Over / diagnose ===
+[INFO] === sshd-cli 1.35.1 - Over / diagnose ===
 [OK] sshd-cli is correct geïnstalleerd.
 ```
 
 Greek (`el`), after **83**:
 
 ```text
-[INFO] **sshd-cli**(*1.35.0*)
+[INFO] **sshd-cli**(*1.35.1*)
 1. **πελάτης**: *πελάτης OpenSSH αυτής της σύνδεσης (~/.ssh/config, ssh, φάκελοι)*
 2. **διακομιστής**: *sshd OpenSSH αυτού του υπολογιστή (ακρόαση, κλειδιά, θύρα)*
 5. **γλώσσα**: *γλώσσα εμφάνισης αυτού του μενού*
@@ -449,7 +449,7 @@ Greek (`el`), after **83**:
 [INFO] sshd-cli — απλοποίηση εγκατάστασης sshd στο Termux
 [INFO] Χρήση:
   sshd-cli [εντολή] [επιλογές]
-[INFO] === sshd-cli 1.35.0 - Σχετικά / διάγνωση ===
+[INFO] === sshd-cli 1.35.1 - Σχετικά / διάγνωση ===
 [OK] Το sshd-cli είναι σωστά εγκατεστημένο.
 ```
 
@@ -3597,6 +3597,7 @@ This requirement is satisfied when all of the following hold:
 | 2026-09-30 | v1.3.1: `help_fix_config` in the §2.6 `app_menu_text` fence. Live sample tokens follow `VERSION` **1.30.0**. | Grok (owner request) |
 | 2026-10-02 | v1.4.0: front **5**. Language numbers **50–69** (at most 20). Assigned **51–58**. Samples follow `VERSION` **1.31.0**. | Grok (owner request) |
 | 2026-10-02 | v1.5.0: order is **51** English, **52** Simplified Chinese, **53** Traditional Chinese, then native-speaker count through **63** Greek. Adds `ar`, `pt`, `ru`, `nl`, `el`. **50** and **64–69** stay unprinted. Samples follow `VERSION` **1.32.0**. | Grok (owner request) |
+| 2026-10-16 | v1.7.2: samples follow `VERSION` **1.35.1**. | Grok (owner request) |
 | 2026-10-14 | v1.7.1: samples follow `VERSION` **1.35.0**. | Grok (owner request) |
 | 2026-10-14 | v1.7.0: front **7** language. Block **70–89** (assigned **71–83**). **70** and **84–89** stay unprinted. Front **8** is not a row. Samples follow `VERSION` **1.34.0**. | Grok (owner request) |
 | 2026-10-10 | v1.6.0: front **7** hide sentence in §2.4.2 and in `app_menu_text` (`sudoers not available for` plus the host label). Samples follow `VERSION` **1.33.0**. | Grok (owner request) |
@@ -3614,6 +3615,6 @@ Words this requirement uses. Each row is the term and the definition this file m
 | **Worked sample** | A markdown transcription of a live board, or of the opening of `help` and `about`. Bold is the short. Italic is the long. The version token is the live `VERSION`. The source choose-prompt ends with a space that the sample omits. |
 | **Do not capture `read`** | A `read`, and any helper whose body contains `read`, runs in the current shell. `app_cmd_menu_language` is that kind of helper. `app_menu_text` is not, and its body must stay free of those letters so a command substitution stays legal. |
 
-**Last Updated**: 2026-10-14 (1.7.1 samples follow VERSION **1.35.0**. 1.7.0 front **7**, block **70–89** (assigned **71–83**); samples follow VERSION **1.34.0**. 1.6.0 adds the front **7** hide sentence; samples follow VERSION **1.33.0**. 1.5.0 assigns **51–63** in speaker order after English, Simplified Chinese, and Traditional Chinese; samples follow VERSION **1.32.0**. 1.4.0 front **5**, language block **50–69** (assigned **51–58**), samples follow VERSION **1.31.0**. 1.3.1 `help_fix_config` and live `VERSION` **1.30.0** in the samples. 1.3.0 worked samples and translation tables. 1.2.0 adds `ja`, `ko`, and human help/about. 1.1.0 adds `es`, `fr`, `de`, `zh-Hans`)
+**Last Updated**: 2026-10-16 (1.7.2 samples follow VERSION **1.35.1**. 1.7.1 samples follow VERSION **1.35.0**. 1.7.0 front **7**, block **70–89** (assigned **71–83**); samples follow VERSION **1.34.0**. 1.6.0 adds the front **7** hide sentence; samples follow VERSION **1.33.0**. 1.5.0 assigns **51–63** in speaker order after English, Simplified Chinese, and Traditional Chinese; samples follow VERSION **1.32.0**. 1.4.0 front **5**, language block **50–69** (assigned **51–58**), samples follow VERSION **1.31.0**. 1.3.1 `help_fix_config` and live `VERSION` **1.30.0** in the samples. 1.3.0 worked samples and translation tables. 1.2.0 adds `ja`, `ko`, and human help/about. 1.1.0 adds `es`, `fr`, `de`, `zh-Hans`)
 **Owner**: sshd-cli project maintainers
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

@@ -20,7 +20,8 @@ Exit **0** when all assertions pass; **1** on failure; **2** if ship unit missin
 | `test_local_lifecycle.sh` | install / self-uninstall / about / login rc / `BASHRC` fixture / sibling / scoped uninstall / heal / `rc-test` / Termux pkg mock / companion link / daemon hint / Android wake lock | **TP-LC-*** · **TP-CSUM-01** · **TP-SSHD-02** · **TP-TX-08..16** |
 | `test_dns.sh` | this-login `~/.ssh/config` Host list (dns-ip; edit/add/delete/unset; as Termux / identity / Old OpenSSH comments; simpler Ciphers/MACs; **minted** Host/IP; TTY unknown retry; alpine comments `GSSAPI*`) | **TP-DNS-01..52** |
 | `test_fix_config.sh` | `fix-config` flags, OS comment table, automatic pass on `version` | **TP-FIX-01..14** |
-| `test_ssh_download.sh` | OpenSSH client Host pick (`ssh`) + user default + commented `HostKeyAlgorithms` `-o` + remote folder tar.gz (`download`) + local folder tar.gz (`upload`) with TTY user default and `~/folder`; fake `SSHD_CLI_SSH`. Those rows are not an MSYS reader. **TP-OS-*** stay todo | **TP-SSH-01..10** · **TP-DL-01..17** · **TP-UL-01..18** |
+| `test_ssh_download.sh` | OpenSSH client Host pick (`ssh`) + user default + commented `HostKeyAlgorithms` `-o` + remote folder tar.gz (`download`) + local folder tar.gz (`upload`) with TTY user default and `~/folder`; fake `SSHD_CLI_SSH`. Those rows are not an MSYS reader | **TP-SSH-01..10** · **TP-DL-01..17** · **TP-UL-01..18** |
+| `test_os_transfer.sh` | MSYS2 / Git Bash finished-file transfer and the Windows_NT pipe; fake `ssh` and `scp` | **TP-OS-GB-01..04** · **TP-OS-CMD-01** |
 | `test_config_backup.sh` | `backup-config` / `sync-config` / `sync-from-remote` / sudoers grant; Termux Git Bash Windows cmd hide; TTY sudoers unknown retry | **TP-CFG-01..17** |
 
 ## Isolation

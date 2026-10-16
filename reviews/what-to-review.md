@@ -4,8 +4,8 @@
 **Class:** software-development · domain SSOT `requirement-domain-sshd` · online-install channel + TTY menu / non-TTY CLI self-install.  
 **Always load first:** `reviews/lessons.md`
 
-**Last plan update:** 2026-10-14  
-**Ship unit VERSION:** 1.35.0  
+**Last plan update:** 2026-10-16  
+**Ship unit VERSION:** 1.35.1  
 **Suite baseline:** see `reviews/test-plan.md`
 
 ---
@@ -14,8 +14,8 @@
 
 | # | Check | Notes |
 |---|--------|-------|
-| P1 | Read `docs/requirements/index.md` | 33 Active (class + 28 shell + domain sshd + 3 pointers), including `requirement-shell-exit-condition` and the nine CLI coding homes. The Git Bash home owns the MSYS gzip-stdin ban. The ship unit still pipes |
-| P2 | Confirm ship unit `src/sshd-cli` / `./sshd-cli` | `APP_NAME` / `VERSION` hard-assign (**1.35.0**); same bytes |
+| P1 | Read `docs/requirements/index.md` | 33 Active (class + 28 shell + domain sshd + 3 pointers), including `requirement-shell-exit-condition` and the nine CLI coding homes. The Git Bash home owns the MSYS gzip-stdin ban. From **1.35.1** an MSYS reader uses a finished file |
+| P2 | Confirm ship unit `src/sshd-cli` / `./sshd-cli` | `APP_NAME` / `VERSION` hard-assign (**1.35.1**); same bytes |
 | P2a | Language menu numbers | Front **7** language. Block **70–89** is at most 20 languages. Assigned **71–83**. **70** and **84–89** are not printed. Front **8** is not a row. **TP-CLI-24** |
 | P3 | Load `reviews/lessons.md` and re-check open L-* that still apply | Skip L-SUDOERS / restore lessons as parent-only |
 | P4 | Run `./tests/run.sh` | Record PASS/FAIL/SKIP in report |
@@ -31,7 +31,7 @@
 | Surface | Path | Review focus |
 |---------|------|--------------|
 | Class | `requirement-class-software-dev.md` | posix-sh; Termux sshd purpose; **project nature** |
-| Domain | `requirement-domain-sshd.md` | status/start/stop/port/keys/menu/dns; `fix-config` comments unsupported OpenSSH client keywords by OS and runs on every start against `~/.ssh/config`; Termux daemonize; POSIX Linux systemd `systemctl` unit path; this-login ssh_config dns-ip; non-root server hides **22–24**; Termux Old OpenSSH comments + `ssh -o`; TTY unknown choice redisplay; **upload** client **14** (**TP-UL-01..18** are a fake `ssh`, not an MSYS reader; **TP-OS-*** are todo); sudoers front **5** |
+| Domain | `requirement-domain-sshd.md` | status/start/stop/port/keys/menu/dns; `fix-config` comments unsupported OpenSSH client keywords by OS and runs on every start against `~/.ssh/config`; Termux daemonize; POSIX Linux systemd `systemctl` unit path; this-login ssh_config dns-ip; non-root server hides **22–24**; Termux Old OpenSSH comments + `ssh -o`; TTY unknown choice redisplay; **upload** client **14** (**TP-UL-01..18** are a fake `ssh`, not an MSYS reader; **TP-OS-GB-01..04** and **TP-OS-CMD-01** have; **TP-OS-ALP-01**, **TP-OS-BB-01**, **TP-OS-OTH-01** stay todo); sudoers front **5** |
 | CLI interface | `requirement-shell-cli-interface.md` | This-login + domain commands, flags, dispatch; dual mention |
 | Empty argv | `requirement-shell-cli-zero-arguments.md` · `requirement-shell-cli-self-install.md` | TTY **menu** / non-TTY **CLI self-install** (not payload) |
 | Self-management | `requirement-shell-self-management.md` | install / self-update / self-uninstall; companion **call site** |

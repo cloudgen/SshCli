@@ -1,7 +1,7 @@
 # Requirement ↔ test matrix — sshd-cli
 
-**Updated:** 2026-10-14  
-**Product VERSION:** 1.35.0  
+**Updated:** 2026-10-16  
+**Product VERSION:** 1.35.1  
 **Suite:** `tests/run.sh`
 
 | Requirement key | Area | TP families | Coverage notes |
@@ -34,8 +34,8 @@
 | requirement-shell-debian-cli-coding | shell | TP-SSHD-03, TP-SSHD-09..14, TP-SSHD-10, **TP-SSHD-17** | `posix` class; no `apt` wrap; missing-sshd hint is not Debian-only. No Debian-only suite host |
 | requirement-shell-macos-cli-coding | shell | TP-CLI-12, TP-CLI-20, **TP-SSHD-17** | Darwin cache `/tmp/cache` → `Library/Caches` → `~/cache`; digest stays `util_sha256_file`; Mac missing-sshd hint does not name `brew` |
 | requirement-shell-termux-cli-coding | shell | TP-SSHD-04, TP-SSHD-13, TP-CFG-04 | `sshd_is_termux`; sudoers hide; start does not call `systemctl`. `pkg` and wake lock stay on termux-ish |
-| requirement-shell-windows-git-bash-cli-coding | shell | TP-CFG-05, TP-CLI-12, TP-LC-18, **TP-SSHD-17**, **TP-OS-GB-01..04** (todo) | `sshd_is_git_bash`; token `gitbash`; cache tmp → AppData; `install` does not call `pkg`; missing-sshd hint does not name `apt`. Owns the MSYS gzip-stdin ban. Ship unit still pipes. Windows cmd is TP-LC-19 and TP-OS-CMD-01, not this row |
-| requirement-shell-windows-cmd-cli-coding | shell | TP-CFG-09, TP-LC-19, **TP-OS-CMD-01** (todo) | Detect after Git Bash, Cygwin, and WSL. Keeps the streamed pipe. `Windows_NT` is not the MSYS ban |
+| requirement-shell-windows-git-bash-cli-coding | shell | TP-CFG-05, TP-CLI-12, TP-LC-18, **TP-SSHD-17**, **TP-OS-GB-01..04** | `sshd_is_git_bash`; token `gitbash`; cache tmp → AppData; `install` does not call `pkg`; missing-sshd hint does not name `apt`. Owns the MSYS gzip-stdin ban. From **1.35.1** an MSYS reader uses the finished file. Windows cmd is TP-LC-19 and TP-OS-CMD-01, not this row |
+| requirement-shell-windows-cmd-cli-coding | shell | TP-CFG-09, TP-LC-19, **TP-OS-CMD-01** | Detect after Git Bash, Cygwin, and WSL. Keeps the streamed pipe. `Windows_NT` is not the MSYS ban |
 | requirement-shell-alpine-cli-coding | shell | TP-FIX-*, **TP-OS-ALP-01** (todo) | `sshd_fix_os_class` alpine. Keeps the streamed pipe. No `apk` wrap. GSSAPI stays on the domain file |
 | requirement-shell-busybox-cli-coding | shell | **TP-OS-BB-01** (todo) | `busybox APPLET`. Keeps the streamed pipe. Does not rename filename-selected applets |
 | requirement-shell-other-linux-cli-coding | shell | **TP-OS-OTH-01** (todo) | POSIX Linux outside Debian, Fedora/RHEL, Alpine, and Termux. Keeps the streamed pipe. No invented package tool |

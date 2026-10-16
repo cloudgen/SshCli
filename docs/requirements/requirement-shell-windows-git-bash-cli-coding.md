@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-shell-windows-git-bash-cli-coding.md  
-**Status**: Active (Version 1.1.0)  
+**Status**: Active (Version 1.2.0)  
 **Area**: shell  
 **Key**: `requirement-shell-windows-git-bash-cli-coding`  
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -56,7 +56,7 @@ Windows cmd is a different detect (`sshd_is_windows_cmd`). This file does not ow
 15. The complying transfer is four steps. The writer finishes `tar czf` to a new file and `gzip -t` on that file succeeds. The file crosses with `scp` or `sftp`, so an MSYS process is not the stdin reader. The reader runs `tar xzf <file> -C <dest>` with the archive named as a file. After a successful extract, that archive is removed. The product result is the folder.  
 16. The archive name **MUST** be unique in the destination directory. Upload's extract directory stays the remote ssh user's `"$HOME"`, expanded on that host. Download's extract directory stays this login's current directory. `cat archive | ssh 'cat > archive.tar.gz'` is still an MSYS stdin read when the remote shell is Git Bash. It does not meet rule 15.  
 17. On failure after gzip or tar has already rejected or truncated the stream, the operator line **MUST** name gzip or tar. It **MUST NOT** say only that `ssh <alias>` failed.  
-18. **1.35.0 still pipes on every Host.** **TP-UL-01** .. **TP-UL-18** store stdin with a fake `ssh`. They do not run MSYS `tar`. **TP-OS-GB-01** .. **TP-OS-GB-04** are todo.
+18. From product **1.35.1**, an MSYS2 or Git Bash gzip reader uses the finished-file transfer in rule 15. **TP-UL-01** .. **TP-UL-18** store stdin with a fake `ssh`. They do not run MSYS `tar`. **TP-OS-GB-01** .. **TP-OS-GB-04** are the MSYS reader proof.
 
 ### 2.1 Implementation Notes (this project)
 
@@ -70,7 +70,7 @@ Windows cmd is a different detect (`sshd_is_windows_cmd`). This file does not ow
 | Package / wake lock | not invoked |
 | Service manager | not used |
 | Windows cmd | `sshd_is_windows_cmd` — out of this file |
-| Gzip reader | no pipe into MSYS `tar` or `gzip`. Ship unit still pipes |
+| Gzip reader | no pipe into MSYS `tar` or `gzip`. From **1.35.1** the ship unit uses the finished file for that reader |
 | In-tool sudo | none |
 
 ### 2.2 Why This Requirement Exists (Direct CIAO Alignment)
@@ -143,13 +143,13 @@ Helpers (this product): `sshd_is_termux`, `sshd_is_git_bash`, `sshd_is_windows_c
 | **TP-LC-18** | Git Bash `install` does not call `pkg` | have |
 | **TP-SSHD-17** | Git Bash missing-sshd hint does not name `apt` | have |
 | **TP-LC-19** | Windows cmd `install` does not call `pkg` | have on the cmd detect; not this file’s ownership |
-| **TP-OS-GB-01** .. **TP-OS-GB-04** | MSYS2 / Git Bash reader does not take gzip on stdin; failure names gzip or tar | todo |
+| **TP-OS-GB-01** .. **TP-OS-GB-04** | MSYS2 / Git Bash reader does not take gzip on stdin; failure names gzip or tar | have |
 
-The ship unit still pipes. A passing **TP-UL-*** row does not close this ban.
+A passing **TP-UL-*** row does not by itself prove this ban. **TP-OS-GB-01** .. **TP-OS-GB-04** do.
 
 **Matrix:** `reviews/requirement-test-matrix.md`  
 **Map:** `reviews/test-plan.md`
 
-**Last Updated**: 2026-10-14 (1.1.0 MSYS2 / Git Bash gzip-stdin ban. Ship unit still pipes. 1.0.0 family coding home)  
+**Last Updated**: 2026-10-16 (1.2.0 ship unit uses the finished file for an MSYS reader. 1.1.0 MSYS2 / Git Bash gzip-stdin ban. 1.0.0 family coding home)  
 **Owner**: Cloudgen Wong  
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

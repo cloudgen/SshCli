@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-shell-windows-cmd-cli-coding.md  
-**Status**: Active (Version 1.0.0)  
+**Status**: Active (Version 1.0.1)  
 **Area**: shell  
 **Key**: `requirement-shell-windows-cmd-cli-coding`  
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -45,7 +45,7 @@ This file owns Windows cmd CLI coding for sshd-cli: how this login is recognized
 | Detect | `sshd_is_windows_cmd` |
 | Transfer | streamed pipe. Ship unit already pipes |
 | Missing sshd | `Windows cmd does not provide sshd. Install OpenSSH for Windows, then retry ${APP_NAME} start.` |
-| Proof | **TP-OS-CMD-01** todo. **TP-LC-19** and **TP-CFG-09** already cover hide and `pkg` |
+| Proof | **TP-OS-CMD-01** have. **TP-LC-19** and **TP-CFG-09** already cover hide and `pkg` |
 
 ### 2.2 Why This Requirement Exists (Direct CIAO Alignment)
 
@@ -79,13 +79,13 @@ This file owns Windows cmd CLI coding for sshd-cli: how this login is recognized
 
 | TP family / ID | What it shows | Status |
 |----------------|---------------|--------|
-| **TP-OS-CMD-01** | Windows cmd keeps the streamed pipe | todo |
+| **TP-OS-CMD-01** | Windows cmd keeps the streamed pipe | have |
 | **TP-CFG-09** | Hide token `windows-cmd` | have |
 | **TP-LC-19** | `install` does not call `pkg` | have |
 
 **Matrix:** `reviews/requirement-test-matrix.md`  
 **Map:** `reviews/test-plan.md`
 
-**Last Updated**: 2026-10-14 (1.0.0 Windows cmd keeps the streamed pipe)  
+**Last Updated**: 2026-10-16 (1.0.1 **TP-OS-CMD-01** have. 1.0.0 Windows cmd keeps the streamed pipe)  
 **Owner**: sshd-cli project maintainers  
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).
