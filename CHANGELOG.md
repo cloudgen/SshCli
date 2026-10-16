@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- README pictures of the numbered boards, captured from the 1.35.1 ship unit on a terminal. Translated front boards keep **5** sudoers, **6** self-management, and **7** language.
+
 ## [1.35.1] - 2026-10-16
 
 ### Fixed
