@@ -1,11 +1,33 @@
-# Test plan — sshd-cli
+# Test plan — SshCli
 
 Maps **TP-*** coverage to `tests/`.  
-**Suite entry:** `./tests/run.sh`  
-**Ship unit:** `src/sshd-cli`  
-**Product VERSION:** 1.35.1  
-**Last plan update:** 2026-10-16  
-**Last suite run:** PASS=1142 FAIL=0 SKIP=0 (`./tests/run.sh`, 2026-10-16, product 1.35.1). **TP-OS-GB-01** .. **TP-OS-GB-04** and **TP-OS-CMD-01** passed. Prior run: PASS=1107 FAIL=0 SKIP=0 (`./tests/run.sh`, 2026-10-14, product 1.35.0). **TP-SSHD-17** passed: a missing sshd names `dnf` on Fedora and RHEL and `apt` on Debian and Ubuntu, and says this program does not run that command. Git Bash, Windows cmd, and macOS each have their own next step. Prior run: PASS=1100 FAIL=0 SKIP=0 (`./tests/run.sh`, 2026-10-14, product 1.34.0). **TP-CLI-14**, **TP-CLI-21**, **TP-CLI-24**, **TP-SSHD-04**, and **TP-CFG-04** / **05** / **09** / **17** passed: front **5** sudoers (**51–55**), **6** self-management (TTY **62** runs about), **7** language block **70–89** (assigned **71–83**); front **8** warns; Termux / Git Bash / Windows cmd omit row **5**. Prior run: PASS=1099 FAIL=0 SKIP=0 (`./tests/run.sh`, 2026-10-10, product 1.33.0). **TP-SSHD-04**, **TP-CFG-04**, **TP-CFG-05**, and **TP-CFG-09** passed: Termux / Git Bash / Windows cmd print `sudoers not available for termux` / `gitbash` / `windows-cmd` before the front numbers and omit row **7**. Prior run: PASS=1091 FAIL=0 SKIP=0 (`./tests/run.sh`, 2026-10-02, product 1.32.0). **TP-CLI-14** and **TP-CLI-24** passed: front **5** language, block **50–69** (assigned **51–63**); **50**, **64**, and **69** do not write the file; front **6** warns and does not open the language board. Earlier: PASS=1065 FAIL=0 SKIP=0 (`./tests/run.sh`, 2026-10-02, product 1.31.0), assigned **51–58**. Earlier: PASS=844 FAIL=22 SKIP=0 (`./tests/run.sh`, 2026-09-28, product 1.28.0). Those 22 were TP-DL-* `tar xzf` cases. The 1.31.0 run’s TP-DL-* cases passed.
+**Suite entry:** `./tests/run.sh` (Python `unittest discover`)  
+**Ship unit:** `src/SshCli` and the launcher `./sshd-cli`  
+**Product VERSION:** 2.0.0  
+**Last plan update:** 2026-10-22  
+**Last suite run:** PASS=37 FAIL=0 SKIP=0 (`./tests/run.sh`, 2026-10-22, product 2.0.0, 0.067s). Re-run after the docs alignment stayed the same. Files: `test_about.py`, `test_hello.py`, `test_language.py`, `test_tui.py`, `test_domain.py`.
+
+## Python generation (live)
+
+| ID | Status | What it proves |
+|----|--------|----------------|
+| TP-TUI-09 | have | English path label. `LANG` does not select Traditional Chinese. Clock stays on the path line |
+| TP-TUI-10 | have | Wide and Fullwidth columns. The colon follows display width. Front row 1 is client-side. Rows 3, 4, 8, and 9 stay translated |
+| TP-LANG-01 | have | Row 4 language, codes 41–53, leaf mode 0600, `SSHCLI_LANG` over `VIDEOJOIN_LANG`, `LANG` ignored |
+| TP-ABOUT-01..16 | have | About page, CheckSystem, ChronicleLogger construct in `def main` |
+| TP-HELLO | have | Typed `hello` prints the welcome line and does not draw the menu. Typing `hello` on the menu shows that line |
+| TP-MENU-HIDE | have | POSIX root shows 5, 15, 16, and 22–24. Non-root POSIX hides 22–24 with the shell sentence. Termux, Git Bash, and Windows cmd omit 5 and 15–16 and show 18 |
+| TP-FIX | have | Alpine comments active `GSSAPI*`. Termux comments algorithm keywords. POSIX leaves them. Auto-fix writes a 0600 backup only when the text changes |
+| TP-DNS | have | Add, unset (not dns or ip), delete, `Host *` skipped, commented algorithms add `-o HostKeyAlgorithms=+ssh-rsa` |
+| TP-XFER | have | `Windows_NT` is not MSYS. Reader `msys` plans `file`. Reader `pipe` plans `pipe`. `SSHD_CLI_SSH` does not run the real client |
+| TP-SUDO | have | JSON grant is `backup-config` only. `mkdir` in the file is refused. Termux cannot generate. Nothing is installed into `/etc` |
+| TP-SRV | have | Non-root start fails and says it does not wrap sudo. Termux start uses `sshd -f` plus wake-lock under the test binaries |
+| TP-RC | have | `rc-test` create does not invent `.zshrc`. Modify keeps the dongle line. Noop does not duplicate the PATH line |
+| TP-CLI-GATE | have | Empty non-TTY help returns 0. `--json` and `--quiet` do not open the menu. `--purpose` with no text is status 1. Unknown verb stays `ERROR:`. Domain `--json` errors are `out_error` / `unknown` |
+
+The sections under **Baseline coverage** are the **1.35.1** shell suite (last recorded PASS=1142). They are not the live runner. The shell scripts remain in `tests/legacy-shell/`.
+
+**Previous shell suite:** PASS=1142 FAIL=0 SKIP=0 (`./tests/run.sh`, 2026-10-16, product 1.35.1). **TP-OS-GB-01** .. **TP-OS-GB-04** and **TP-OS-CMD-01** passed. Prior run: PASS=1107 FAIL=0 SKIP=0 (`./tests/run.sh`, 2026-10-14, product 1.35.0). **TP-SSHD-17** passed: a missing sshd names `dnf` on Fedora and RHEL and `apt` on Debian and Ubuntu, and says this program does not run that command. Git Bash, Windows cmd, and macOS each have their own next step. Prior run: PASS=1100 FAIL=0 SKIP=0 (`./tests/run.sh`, 2026-10-14, product 1.34.0). **TP-CLI-14**, **TP-CLI-21**, **TP-CLI-24**, **TP-SSHD-04**, and **TP-CFG-04** / **05** / **09** / **17** passed: front **5** sudoers (**51–55**), **6** self-management (TTY **62** runs about), **7** language block **70–89** (assigned **71–83**); front **8** warns; Termux / Git Bash / Windows cmd omit row **5**. Prior run: PASS=1099 FAIL=0 SKIP=0 (`./tests/run.sh`, 2026-10-10, product 1.33.0). **TP-SSHD-04**, **TP-CFG-04**, **TP-CFG-05**, and **TP-CFG-09** passed: Termux / Git Bash / Windows cmd print `sudoers not available for termux` / `gitbash` / `windows-cmd` before the front numbers and omit row **7**. Prior run: PASS=1091 FAIL=0 SKIP=0 (`./tests/run.sh`, 2026-10-02, product 1.32.0). **TP-CLI-14** and **TP-CLI-24** passed: front **5** language, block **50–69** (assigned **51–63**); **50**, **64**, and **69** do not write the file; front **6** warns and does not open the language board. Earlier: PASS=1065 FAIL=0 SKIP=0 (`./tests/run.sh`, 2026-10-02, product 1.31.0), assigned **51–58**. Earlier: PASS=844 FAIL=22 SKIP=0 (`./tests/run.sh`, 2026-09-28, product 1.28.0). Those 22 were TP-DL-* `tar xzf` cases. The 1.31.0 run’s TP-DL-* cases passed.
 
 Status: **have** = automated today · **todo** = needed · **optional** · **n/a** · **skip** (environment)
 

@@ -1,14 +1,52 @@
 **file**: docs/requirements/requirement-domain-sshd.md  
-**Status**: Active (Version 1.27.6)  
+**Status**: Active (Version 1.28.0 – Python text menu. Sections that name shell functions, front 6, or front 7 describe the retired `/bin/sh` ship unit. Section 1.0 wins when they disagree.)  
 **Area**: domain  
 **Key**: `requirement-domain-sshd`  
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
 
 ## 1. Purpose
 
-This is the **one Active domain SSOT** for **sshd-cli**. The product **purpose** is to **simplify Termux to install sshd**. OpenSSH **sshd** (the SSH server) plus this login’s **authorized_keys** are the domain; Termux is the first home and ordinary POSIX Linux is the second. Type 0 install/self-update/self-uninstall stay on the shell lifecycle requirements. This file owns specialized subcommands, features, help rows, and about fields.
+This is the **one Active domain SSOT** for **sshd-cli**. The product **purpose** is to **simplify Termux to install sshd**, and to operate this login’s OpenSSH client. OpenSSH **sshd** plus this login’s **authorized_keys** and `~/.ssh/config` are the domain. Termux is the first home and ordinary POSIX Linux is the second. Pip lifecycle for this package is `requirement-python-cli-interface` and `requirement-python-tui`. This file owns the OpenSSH subcommands, the menu handlers, and the hide rules.
 
 Bootstrap origin is **selfmanaged** (A → B only). Domain law lives here on B, never on A.
+
+### 1.0 Python generation (product 2.0.0)
+
+The ship unit is the Python package `SshCli`. The console script stays `sshd-cli`. `legacy/sshd-cli.sh` is the 1.35.1 program and is not the test runner.
+
+The text menu uses these numbers:
+
+| Board | Numbers |
+|-------|---------|
+| Front | **1** client-side, **2** server-side, **3** system-log, **4** language, **5** sudoers (omitted on Termux, Git Bash, and Windows cmd), **8** self-management, **9** Exit |
+| Client, POSIX | **11** dns, **12** ssh, **13** download, **14** upload, **15** backup-config, **16** sync-config, **0** Back |
+| Client, normal-user class | **11–14**, then **18** sync-from-remote, **0** Back. Rows 15 and 16 are omitted |
+| Server | **21** status. **22** start, **23** stop, **24** restart when the login is the normal-user class or POSIX root. A non-root POSIX login shows **21** and Back |
+| Sudoers | **51** generate-sudoer-request, **52** submit-sudoer-request, **53** print-sudoers, **54** print-sudoers-install-script, **55** remove-project-sudoers |
+| DNS actions | **111** Edit, **112** Add, **113** Delete, **114** Unset |
+| system-log | **31** view-log, **32** clear-log, **33** log-folder |
+| language | **41–53** in the HelloTui order. **40** and **54–59** are not printed |
+| self-management | **82** version, **83** about, **84** version-check, **85** self-update, **86** self-uninstall, **87** self-install |
+
+Shell front **6** and **7** are not rows. Their jobs are row **8** and row **4**.
+
+These stay typed verbs and are not numbered rows: `port`, `config`, `host-keys`, `auth-keys`, `fix-config`, `install`, `wake-lock`, `wake-unlock`, and `rc-test`. OpenSSH `install` is not row **87**. Row **87** is pip `self-install`. `requirement-python-cli-interface` points at this section for the domain verbs.
+
+Typed `hello` prints `Welcome to SshCli <version>.` and does not draw the menu. Typing `hello` on an open menu shows that same line. Row 1 is client-side.
+
+Hide sentences, before the numbers, stay the 1.35.1 English text: `sudoers not available for termux|gitbash|windows-cmd`, `backup-config and sync-config not available for <label>`, and `start/stop/restart sshd features are not available for non-root in <OS-Name>`.
+
+Empty arguments on a terminal open the menu and do not install. Empty arguments off a terminal print help and return 0. `--json` or `--quiet` with no verb do the same and do not open the menu. `--debug` alone on a terminal opens the menu. The logger is quiet when the text screen opens.
+
+`fix-config` still comments active Alpine `GSSAPI*` keywords and active Termux `HostKeyAlgorithms`, `PubkeyAcceptedAlgorithms`, and `PubkeyAcceptedKeyTypes`. Other lines stay, including lines that are already comments. Every invocation runs that pass on `~/.ssh/config` before the verb, and stays silent when the file is missing or unchanged.
+
+An MSYS or Git Bash gzip reader uses a finished archive, `scp` of that named file, extract, then remove. `Windows_NT` alone keeps the pipe. A failed or empty remote probe keeps the pipe. Download uses the local detector when `SSHD_CLI_READER` is unset and the probe says MSYS. Upload probes the remote reader.
+
+This program does not wrap `sudo`, `apt`, `dnf`, `brew`, or `apk`. Non-root POSIX `start`, `stop`, and `restart` fail closed and do not call `sudo`. Termux `install` may run `pkg install -y openssh termux-auth`. The sudoers grant is only `backup-config` for the invoking user, `NOPASSWD`, and does not allowlist `mkdir`, `cp`, `chmod`, or `chown`. Submit does not install the file into `/etc`.
+
+`dns unset` cannot drop `dns` or `ip`. `Host *` is not a row. A commented algorithm line on a Host makes `ssh` pass `-o HostKeyAlgorithms=+ssh-rsa`. The client does not pass `-o GSSAPI*`.
+
+`rc-test` may create or note a bashrc PATH line and may create a missing profile that sources bashrc. It does not invent `.zshrc`.
 
 ### 1.1 Human-facing
 

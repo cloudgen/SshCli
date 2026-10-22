@@ -7,9 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-10-22
+
+### Changed
+
+- **Python generation.** The ship unit is the package `SshCli`. The console script stays `sshd-cli`. The `/bin/sh` program and its tests are under `legacy/` and `tests/legacy-shell/`. `tests/run.sh` discovers Python tests. Version **2.0.0** follows shell **1.35.1**.
+- **Text menu.** Front rows are **1** client-side, **2** server-side, **3** system-log, **4** language, **5** sudoers (POSIX), **8** self-management, **9** Exit. Shell rows **6** and **7** are not printed. system-log **31–33**, language **41–53**, and pip **82–87** stay. Typed `hello` still prints `Welcome to SshCli 2.0.0.` and does not draw the menu.
+- **Lifecycle is pip.** `python -m pip` for version-check, self-update, self-install, and self-uninstall. Empty arguments on a terminal open the menu. Empty arguments off a terminal print help and return 0. There is no `curl | sh` installer.
+- **Public repository.** This generation is published at `https://github.com/cloudgen/SshCli`. The console command stays `sshd-cli`.
+
 ### Added
 
-- README pictures of the numbered boards, captured from the 1.35.1 ship unit on a terminal. Translated front boards keep **5** sudoers, **6** self-management, and **7** language.
+- Domain verbs on the same menu and on the command line: status, start, stop, restart, dns, ssh, download, upload, fix-config, backup-config, sync-config, sync-from-remote, the sudoers drafts, Termux `install` / wake-lock, and `rc-test`.
+- Hide sentences stay the 1.35.1 English text. An MSYS gzip reader still uses a finished file. `Windows_NT` alone keeps the pipe.
+- README text picture of the 2.0.0 menu. The PNG files in `screenshots/` remain the 1.35.1 shell boards (front **5** sudoers, **6** self-management, **7** language).
 
 ## [1.35.1] - 2026-10-16
 

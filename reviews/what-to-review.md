@@ -1,12 +1,14 @@
-# What to review — sshd-cli
+# What to review — SshCli
 
-**Living checklist** (review plan). Product: **sshd-cli** — simplify Termux to install sshd.  
-**Class:** software-development · domain SSOT `requirement-domain-sshd` · online-install channel + TTY menu / non-TTY CLI self-install.  
+**Living checklist** (review plan). Product: **SshCli** **2.0.0** — console script `sshd-cli`. Python text menu for OpenSSH sshd and this login’s SSH client.  
+**Class:** software-development · domain SSOT `requirement-domain-sshd` **1.28.0** · pip lifecycle · TTY menu / non-TTY help.  
 **Always load first:** `reviews/lessons.md`
 
-**Last plan update:** 2026-10-16  
-**Ship unit VERSION:** 1.35.1  
+**Last plan update:** 2026-10-22  
+**Ship unit VERSION:** 2.0.0 (Python). Last shell ship unit: 1.35.1 in `legacy/sshd-cli.sh`.  
 **Suite baseline:** see `reviews/test-plan.md`
+
+The shell review rows below this pre-flight describe the retired `/bin/sh` program. Use them when a behavior is supposed to survive. The Active law is the Python requirements.
 
 ---
 
@@ -14,15 +16,15 @@
 
 | # | Check | Notes |
 |---|--------|-------|
-| P1 | Read `docs/requirements/index.md` | 33 Active (class + 28 shell + domain sshd + 3 pointers), including `requirement-shell-exit-condition` and the nine CLI coding homes. The Git Bash home owns the MSYS gzip-stdin ban. From **1.35.1** an MSYS reader uses a finished file |
-| P2 | Confirm ship unit `src/sshd-cli` / `./sshd-cli` | `APP_NAME` / `VERSION` hard-assign (**1.35.1**); same bytes |
-| P2a | Language menu numbers | Front **7** language. Block **70–89** is at most 20 languages. Assigned **71–83**. **70** and **84–89** are not printed. Front **8** is not a row. **TP-CLI-24** |
+| P1 | Read `docs/requirements/index.md` | Active: class **1.1.0**, twelve Python requirements, domain **1.28.0**. Shell rows are Retired. An MSYS reader still uses a finished file |
+| P2 | Confirm ship unit `src/SshCli` and `./sshd-cli` | Package version **2.0.0**. Console script `sshd-cli`. `./sshd-cli` is the Python launcher, not a byte copy of the shell script |
+| P2a | Menu numbers | Front **1** client-side, **2** server-side, **3** system-log, **4** language, **5** sudoers, **8** self-management, **9** Exit. Language **41–53**. Pip **82–87**. Shell **6** and **7** are not rows |
 | P3 | Load `reviews/lessons.md` and re-check open L-* that still apply | Skip L-SUDOERS / restore lessons as parent-only |
-| P4 | Run `./tests/run.sh` | Record PASS/FAIL/SKIP in report |
-| P5 | Confirm install **channel** is `cloudgen/sshd-cli` | `SCRIPT_URL` default raw GitHub |
-| P6 | Confirm retired verbs stay unknown | `backup` / `restore` (not `backup-config`). `print-sudoers` is live (menu **53**) |
-| P7 | Human-facing | Every REQ has §1.1; README Description is people language; help does not lead with Type 0 |
-| P8 | Normal-user-only CLI | Termux / Git Bash / Windows cmd: no `sudo curl`, no `pkg` except Termux named list |
+| P4 | Run `./tests/run.sh` | Python unittest. Record PASS/FAIL/SKIP. Do not require the legacy shell suite |
+| P5 | Confirm the repository is `cloudgen/sshd-cli` | Install is `python -m pip`, not `curl \| sh` |
+| P6 | Confirm removed video verbs stay unknown | `join` and `list-videos`. `hello` still prints the welcome line. `print-sudoers` is live (menu **53**) |
+| P7 | Human-facing | Active requirements have §1.1. README is people language. Help does not lead with Type 0 |
+| P8 | Normal-user-only CLI | Termux / Git Bash / Windows cmd: no sudoers row, no backup-config row, no `sudo` wrap, no `pkg` except Termux `install` |
 
 ---
 

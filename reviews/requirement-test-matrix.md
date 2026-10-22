@@ -1,8 +1,31 @@
-# Requirement ↔ test matrix — sshd-cli
+# Requirement ↔ test matrix — SshCli
 
-**Updated:** 2026-10-16  
-**Product VERSION:** 1.35.1  
-**Suite:** `tests/run.sh`
+**Updated:** 2026-10-22  
+**Product VERSION:** 2.0.0  
+**Suite:** `tests/run.sh` (Python). Last run PASS=37 FAIL=0 SKIP=0.
+
+Shell rows below the Python block record the 1.35.1 suite. Those requirements are **Retired**. The Active rows are the ones in this first block.
+
+| Requirement key | Area | TP families | Coverage notes |
+|-----------------|------|-------------|----------------|
+| requirement-class-software-dev | class | TP-CLI-GATE | Python package, `tests/run.sh` discovers unittest. Version 2.0.0 |
+| requirement-python-cli-interface | python | TP-HELLO · TP-CLI-GATE | Empty TTY menu vs non-TTY help. `--json` / `--quiet` do not open the menu. Unknown verb sentence |
+| requirement-python-tui | python | TP-TUI-09 · TP-TUI-10 · TP-MENU-HIDE · TP-HELLO | Path, clock, columns, front numbers, HelloTui child numbers |
+| requirement-python-cli-language | python | TP-LANG-01 | Row 4, codes 41–53, leaf mode, `SSHCLI_LANG` |
+| requirement-python-about | python | TP-ABOUT-01..16 | About page and CheckSystem |
+| requirement-python-cli-logging | python | TP-ABOUT (source scan) | `ChronicleLogger(` inside `def main` |
+| requirement-python-oop | python | TP-ABOUT | Host check is not defined in `cli.py` |
+| requirement-python-packaging | python | TP-HELLO | `SshCli` / `sshd-cli` / version string on the welcome line |
+| requirement-python-project-structure | python | runner | `tests/run.sh` does not execute `tests/legacy-shell/` |
+| requirement-python-readme | python | review | Root README sections and `HH:MM:SS` |
+| requirement-python-coding-style | python | TP-DNS · TP-SRV | Minted Host `lab-a`, no live daemon signal |
+| requirement-python-error-handling | python | TP-CLI-GATE · TP-DNS · TP-SRV | `ERROR:` vs `[ERROR]` vs JSON `out_error` |
+| requirement-runtime-prerequisites | python | TP-ABOUT · TP-SRV | ChronicleLogger required. Termux `pkg` is not run on POSIX |
+| requirement-domain-sshd | domain | TP-MENU-HIDE · TP-FIX · TP-DNS · TP-XFER · TP-SUDO · TP-SRV · TP-RC | Python menu §1.0. Shell TP-DNS / TP-FIX / TP-SSH / TP-DL / TP-UL / TP-OS-* remain the 1.35.1 evidence in `tests/legacy-shell/` |
+
+## Retired shell matrix (product 1.35.1)
+
+The table below is the 1.35.1 shell evidence. Those requirements are Retired. `tests/legacy-shell/` is not the live runner.
 
 | Requirement key | Area | TP families | Coverage notes |
 |-----------------|------|-------------|----------------|

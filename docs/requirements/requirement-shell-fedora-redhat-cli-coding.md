@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-shell-fedora-redhat-cli-coding.md  
-**Status**: Active (Version 1.0.1)  
+**Status**: Retired (Python generation 2.0.0. The live ship unit is the SshCli package. This file records the /bin/sh ship unit through 1.35.1. Where it disagrees with requirement-domain-sshd 1.28.0 or an Active requirement-python-*.md / requirement-runtime-prerequisites.md file, those win.) Was  (Version 1.0.1)  
 **Area**: shell  
 **Key**: `requirement-shell-fedora-redhat-cli-coding`  
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)

@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-class-software-dev.md  
-**Status**: Active (Version 1.0.7 – family CLI coding owned by the nine shell coding homes; the Git Bash home owns the MSYS gzip-stdin ban; exit catalog owned by requirement-shell-exit-condition)  
+**Status**: Active (Version 1.1.0 – Python package `SshCli`, console script `sshd-cli`, setuptools. The `/bin/sh` coding homes are Retired and point at this generation.)  
 **Area**: class  
 **Key**: `requirement-class-software-dev`  
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -8,11 +8,15 @@
 
 Declare this workspace as a **software-development** project class and hold the **residual collection** of software-engineering stack facts **not already owned** by more specific Active `requirement-shell-*.md` peers: primary language, toolchain policy, package/test tooling, and runtime OS family.
 
-This file is **class law + residual SSOT**, not a second copy of Type 0 lifecycle, checksum, output, or storage tables (those stay on peer shell requirements).
+This file is **class law + residual SSOT**. Product behavior lives on `requirement-domain-sshd` and the Active `requirement-python-*.md` files. The `/bin/sh` requirements are Retired. They record the ship unit through **1.35.1**.
+
+### 1.0 Python generation
+
+The live ship unit is the Python package **SshCli** **2.0.0**. People run the console script **sshd-cli** (`python -m SshCli` from a checkout). Packaging is setuptools (`pyproject.toml`). The test runner is `tests/run.sh`, which discovers Python tests. The previous program is `legacy/sshd-cli.sh` and is not this runner. Lifecycle is `python -m pip`. This program does not install itself with `curl | sh` and does not wrap `sudo` around pip. The public repository is `https://github.com/cloudgen/SshCli`.
 
 ### 1.1 Human-facing
 
-**In one sentence:** This folder’s **project nature** is **software-development**: we write a POSIX `/bin/sh` program people can install (`./sshd-cli`) to **simplify Termux to install sshd** — not a blank starter kit and not a server-maintenance allowlist.
+**In one sentence:** This folder’s **project nature** is **software-development**: we write a Python text-menu program people run as `sshd-cli` to install and use OpenSSH sshd, and to use this login’s SSH client — not a blank starter kit and not a server-maintenance allowlist.
 
 | Box | Meaning | Example |
 |-----|---------|---------|
@@ -32,7 +36,7 @@ This file is **class law + residual SSOT**, not a second copy of Type 0 lifecycl
 
 | You do… | What it means | What you type |
 |---------|---------------|---------------|
-| Confirm the stack | Primary language is POSIX `/bin/sh`. There is no `package.json` / compiler. Tests are shell. | `./tests/run.sh` |
+| Confirm the stack | Primary language is Python. Packaging is setuptools. Tests are `python3 -m unittest`. The `/bin/sh` program is legacy. | `./tests/run.sh` |
 | Look for install rules | They live on the empty-argv and CLI-interface requirements, not here. | Read those peer files; run `sshd-cli help` |
 
 ---
@@ -107,7 +111,7 @@ This file is **class law + residual SSOT**, not a second copy of Type 0 lifecycl
 | **Linter/formatter** | none as project law (shellcheck optional for maintainers, not required gate) |
 | **Primary runtime / OS family** | POSIX Linux **and Termux** (Android userspace; `PREFIX` bin/etc). Git Bash and Windows cmd are the same **command line for normal user only** class as Termux (Type 1/2 unused). Also compatible UNIX where `/bin/sh` + coreutils/`sha256sum`/`mktemp` exist. Family coding: `requirement-shell-fedora-redhat-cli-coding`, `requirement-shell-debian-cli-coding`, `requirement-shell-macos-cli-coding`, `requirement-shell-termux-cli-coding`, `requirement-shell-windows-git-bash-cli-coding`, `requirement-shell-windows-cmd-cli-coding`, `requirement-shell-alpine-cli-coding`, `requirement-shell-busybox-cli-coding`, `requirement-shell-other-linux-cli-coding`. The Git Bash home owns the MSYS gzip-stdin ban. This file does not copy that ban. `sshd_fix_os_class` stays `alpine` \| `termux` \| `posix` |
 | **Architectures supported** | any arch with a POSIX sh and the external tools the script invokes (no arch-specific binary) |
-| **Git surface** | used for product publish (`github.com/cloudgen/sshd-cli`) |
+| **Git surface** | used for product publish (`github.com/cloudgen/SshCli`) |
 | **Ship unit / install** | yes — repo root `./sshd-cli` + companion `sshd-cli.sha256`; Type 0 online install (peer shell REQs) |
 | **Product version SSOT** | `VERSION="…"` hard-assign in `./sshd-cli` (currently `1.6.0`) |
 
